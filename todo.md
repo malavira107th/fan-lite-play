@@ -54,3 +54,6 @@
 - [x] Responsive design audit
 - [x] Vitest unit tests (22 tests — all passing)
 - [x] Checkpoint & delivery
+
+## UI Improvements
+- [x] Redesign homepage hero section (more visually striking, asymmetric, elegant)

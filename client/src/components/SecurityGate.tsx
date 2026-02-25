@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Shield, CheckCircle, AlertCircle, Loader2, Calendar, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/lib/trpc";
+// Uses standalone REST endpoint for captcha (no DB dependency)
 
 // reCAPTCHA v3 site key
 const RECAPTCHA_SITE_KEY = "6LcgincsAAAAAlQ_CrhOB22G0U4mdi3VWMEqLgX9";
@@ -55,8 +55,6 @@ export default function SecurityGate({ children }: SecurityGateProps) {
   const [ageLoading, setAgeLoading] = useState(false);
   const scriptLoaded = useRef(false);
 
-  const { mutateAsync: verifyCaptchaMutateAsync } = trpc.verifyCaptcha.useMutation();
-
   // Load reCAPTCHA v3 script
   useEffect(() => {
     if (step === "passed" || scriptLoaded.current) return;
@@ -85,8 +83,13 @@ export default function SecurityGate({ children }: SecurityGateProps) {
         check();
       });
       const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
-      // Verify token server-side via tRPC
-      const data = await verifyCaptchaMutateAsync({ token });
+      // Verify token via standalone REST endpoint (no DB dependency)
+      const res = await fetch("/api/verify-captcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json() as { success: boolean; score: number; errorCodes?: string[] };
       if (data.success && data.score >= 0.3) {
         setCaptchaPassed(true);
         // Small delay for UX feedback before moving to step 2

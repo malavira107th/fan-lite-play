@@ -109,3 +109,4 @@
 - [x] Add reCAPTCHA secret key to server env and create tRPC verifyCaptcha endpoint
 - [x] Wire SecurityGate into App.tsx (mandatory for all visitors)
 - [x] Push to GitHub and redeploy on Vercel
+- [x] Fix reCAPTCHA v3 not working on security gate (switched to standalone REST endpoint, no DB dependency)

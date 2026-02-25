@@ -79,3 +79,8 @@
 - [x] Add Responsible Play link to Footer
 - [x] Add Responsible Play link to Navbar (public)
 - [x] Add route in App.tsx
+
+## Logo
+- [x] Generate Fan Lite Play logo image
+- [x] Integrate logo into Navbar, Footer, Login, Register pages
+- [x] Set logo as favicon

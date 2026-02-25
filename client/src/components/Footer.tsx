@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Trophy, Mail, MapPin, Twitter, Instagram, Youtube, ShieldCheck } from "lucide-react";
+import { Mail, MapPin, Twitter, Instagram, Youtube, ShieldCheck } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export default function Footer() {
@@ -48,14 +48,12 @@ export default function Footer() {
 
           {/* Brand column — wider */}
           <div className="lg:col-span-4">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-5 group">
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
-                <Trophy className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-bold text-xl tracking-tight">
-                <span className="text-gradient">Fan Lite</span>
-                <span className="text-foreground"> Play</span>
-              </span>
+            <Link href="/" className="inline-flex items-center mb-5 group">
+              <img
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/qSMEkVvseCWjpGFu.png"
+                alt="Fan Lite Play"
+                className="h-10 w-auto object-contain"
+              />
             </Link>
 
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">

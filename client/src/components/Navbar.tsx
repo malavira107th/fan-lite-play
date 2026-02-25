@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
-import { Trophy, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Settings } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -50,14 +50,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-md shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
-              <Trophy className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-lg tracking-tight">
-              <span className="text-gradient">Fan Lite</span>
-              <span className="text-foreground"> Play</span>
-            </span>
+          <Link href="/" className="flex items-center shrink-0 group">
+            <img
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/qSMEkVvseCWjpGFu.png"
+              alt="Fan Lite Play"
+              className="h-9 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop nav */}

@@ -23,7 +23,8 @@ export function createApp() {
   registerOAuthRoutes(app);
 
   // ── Standalone reCAPTCHA verification endpoint (no DB required) ──────────────
-  app.post("/api/verify-captcha", async (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  app.post("/api/verify-captcha", async (req: any, res: any) => {
     const { token } = req.body as { token?: string };
     if (!token) {
       res.json({ success: false, score: 0, error: "No token provided" });

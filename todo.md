@@ -101,3 +101,4 @@
 - [ ] Add comprehensive SEO meta tags (title, description, canonical, OG, Twitter) to index.html
 - [ ] Add JSON-LD structured data (Organization schema) to homepage
 - [ ] Push to GitHub and redeploy on Vercel
+- [ ] Update all SEO URLs from vercel.app to https://www.fanliteplay.com (sitemap, robots.txt, index.html, meta tags, JSON-LD)

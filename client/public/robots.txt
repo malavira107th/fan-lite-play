@@ -1,5 +1,5 @@
 # Fan Lite Play — robots.txt
-# https://fan-lite-play.vercel.app
+# https://www.fanliteplay.com
 
 User-agent: *
 Allow: /
@@ -14,4 +14,4 @@ Disallow: /admin
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://fan-lite-play.vercel.app/sitemap.xml
+Sitemap: https://www.fanliteplay.com/sitemap.xml

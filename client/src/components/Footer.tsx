@@ -52,7 +52,7 @@ export default function Footer() {
               <img
                 src="/logo.png"
                 alt="Fan Lite Play"
-                className="h-10 w-auto object-contain"
+                className="w-auto object-contain" style={{height: '56px'}}
               />
             </Link>
 

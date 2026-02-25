@@ -54,7 +54,7 @@ export default function Navbar() {
             <img
               src="/logo.png"
               alt="Fan Lite Play"
-              className="h-9 w-auto object-contain"
+              className="w-auto object-contain" style={{height: '56px'}}
             />
           </Link>
 

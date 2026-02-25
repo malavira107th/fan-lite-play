@@ -11,11 +11,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navLinks = [
-  { href: "/challenges", label: "Challenges" },
+// Always visible to everyone
+const publicNavLinks = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/how-it-works", label: "How It Works" },
   { href: "/about", label: "About" },
+];
+
+// Only visible to logged-in users
+const authNavLinks = [
+  { href: "/challenges", label: "Challenges" },
+  { href: "/dashboard", label: "My Dashboard" },
 ];
 
 export default function Navbar() {
@@ -43,7 +49,7 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">
-          {navLinks.map(link => (
+          {[...publicNavLinks, ...(user ? authNavLinks : [])].map(link => (
             <Link key={link.href} href={link.href}>
               <span className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer
                 ${location === link.href
@@ -118,7 +124,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden border-t border-border/60 bg-card/95 backdrop-blur-lg">
           <div className="container py-4 flex flex-col gap-1">
-            {navLinks.map(link => (
+            {[...publicNavLinks, ...(user ? authNavLinks : [])].map(link => (
               <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
                 <span className={`block px-3 py-2 rounded-md text-sm font-medium cursor-pointer
                   ${location === link.href ? "text-primary bg-primary/10" : "text-muted-foreground"}`}>

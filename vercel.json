@@ -6,9 +6,8 @@
     { "source": "/(.*)", "destination": "/api/server" }
   ],
   "functions": {
-    "api/server.ts": {
-      "maxDuration": 30,
-      "memory": 512
+    "api/server.mts": {
+      "maxDuration": 30
     }
   },
   "headers": [

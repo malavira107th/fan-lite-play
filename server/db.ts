@@ -1,50 +1,44 @@
 import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import { users, type InsertUser, type User } from "../drizzle/schema";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
-    try {
-      _db = drizzle(process.env.DATABASE_URL);
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
-    }
+export function getDb() {
+  if (!_db) {
+    const url = process.env.DATABASE_URL;
+    if (!url) throw new Error("DATABASE_URL is not set");
+    const sql = neon(url);
+    _db = drizzle(sql);
   }
   return _db;
 }
 
 export async function createUser(user: InsertUser): Promise<void> {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  const db = getDb();
   await db.insert(users).values(user);
 }
 
 export async function getUserByEmail(email: string): Promise<User | undefined> {
-  const db = await getDb();
-  if (!db) return undefined;
+  const db = getDb();
   const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
   return result[0];
 }
 
 export async function getUserByUsername(username: string): Promise<User | undefined> {
-  const db = await getDb();
-  if (!db) return undefined;
+  const db = getDb();
   const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
   return result[0];
 }
 
 export async function getUserById(id: number): Promise<User | undefined> {
-  const db = await getDb();
-  if (!db) return undefined;
+  const db = getDb();
   const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
   return result[0];
 }
 
 export async function updateUserLastSignedIn(id: number): Promise<void> {
-  const db = await getDb();
-  if (!db) return;
+  const db = getDb();
   await db.update(users).set({ lastSignedIn: new Date() }).where(eq(users.id, id));
 }

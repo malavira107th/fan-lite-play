@@ -110,3 +110,12 @@
 - [x] Wire SecurityGate into App.tsx (mandatory for all visitors)
 - [x] Push to GitHub and redeploy on Vercel
 - [x] Fix reCAPTCHA v3 not working on security gate (switched to standalone REST endpoint, no DB dependency)
+
+## Neon Postgres Integration
+- [x] Migrate ORM from MySQL/mysql2 to Neon Postgres (drizzle-orm/neon-http + @neondatabase/serverless)
+- [x] Rewrite drizzle/schema.ts from mysqlTable to pgTable with pgEnum types
+- [x] Rewrite server/db.ts to use neon() driver (sync getDb, no lazy init)
+- [x] Rewrite server/routers.ts to use .returning({ id }) instead of MySQL insertId pattern
+- [x] Update drizzle.config.ts dialect from mysql to postgresql
+- [x] Verify Neon DB has all 7 tables and 5 enums (confirmed via psycopg2)
+- [x] Push to GitHub and redeploy on Vercel

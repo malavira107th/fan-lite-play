@@ -102,8 +102,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input, ctx }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
 
         const existing = await db
           .select({ id: users.id })
@@ -120,15 +119,15 @@ export const appRouter = router({
         if (existingUsername.length > 0) throw new Error("Username already taken");
 
         const passwordHash = await bcrypt.hash(input.password, 12);
-        const [result] = await db.insert(users).values({
+        const [newUser] = await db.insert(users).values({
           username: input.username,
           email: input.email,
           passwordHash,
           name: input.name ?? input.username,
           role: "user",
-        });
+        }).returning({ id: users.id });
 
-        const userId = (result as any).insertId as number;
+        const userId = newUser!.id;
         const token = await sdk.signSession({ userId, role: "user" }, { expiresInMs: ONE_YEAR_MS });
         const cookieOptions = getSessionCookieOptions(ctx.req);
         ctx.res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: ONE_YEAR_MS });
@@ -139,8 +138,7 @@ export const appRouter = router({
     login: publicProcedure
       .input(z.object({ email: z.string().email(), password: z.string() }))
       .mutation(async ({ input, ctx }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
 
         const [user] = await db
           .select()
@@ -176,8 +174,7 @@ export const appRouter = router({
     list: publicProcedure
       .input(z.object({ status: z.enum(["upcoming", "live", "completed"]).optional() }).optional())
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         const query = db.select().from(matches).orderBy(desc(matches.matchDate));
         if (input?.status) {
           return db.select().from(matches).where(eq(matches.status, input.status)).orderBy(desc(matches.matchDate));
@@ -188,8 +185,7 @@ export const appRouter = router({
     byId: publicProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return null;
+        const db = getDb();
         const [match] = await db.select().from(matches).where(eq(matches.id, input.id)).limit(1);
         return match ?? null;
       }),
@@ -206,14 +202,13 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         const [result] = await db.insert(matches).values({
           ...input,
           matchDate: new Date(input.matchDate),
           status: "upcoming",
-        });
-        return { id: (result as any).insertId };
+        }).returning({ id: matches.id });
+        return { id: result!.id };
       }),
 
     update: adminProcedure
@@ -230,8 +225,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         const { id, matchDate, ...rest } = input;
         const updateData: Record<string, unknown> = { ...rest };
         if (matchDate) updateData.matchDate = new Date(matchDate);
@@ -245,8 +239,7 @@ export const appRouter = router({
     byMatch: publicProcedure
       .input(z.object({ matchId: z.number() }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         return db.select().from(players).where(eq(players.matchId, input.matchId));
       }),
 
@@ -263,13 +256,12 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         const [result] = await db.insert(players).values({
           ...input,
           isCaptainEligible: input.isCaptainEligible ?? true,
-        });
-        return { id: (result as any).insertId };
+        }).returning({ id: players.id });
+        return { id: result!.id };
       }),
 
     update: adminProcedure
@@ -285,8 +277,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         const { id, ...rest } = input;
         await db.update(players).set(rest).where(eq(players.id, id));
         return { success: true };
@@ -295,8 +286,7 @@ export const appRouter = router({
     delete: adminProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         await db.delete(players).where(eq(players.id, input.id));
         return { success: true };
       }),
@@ -307,8 +297,7 @@ export const appRouter = router({
     byMatch: publicProcedure
       .input(z.object({ matchId: z.number() }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         return db
           .select()
           .from(playerPerformance)
@@ -337,8 +326,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
 
         const totalPoints = calculatePoints({
           runsScored: input.runsScored,
@@ -437,8 +425,7 @@ export const appRouter = router({
     list: publicProcedure
       .input(z.object({ matchId: z.number().optional() }).optional())
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         if (input?.matchId) {
           return db
             .select()
@@ -452,8 +439,7 @@ export const appRouter = router({
     byId: publicProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return null;
+        const db = getDb();
         const [c] = await db.select().from(challenges).where(eq(challenges.id, input.id)).limit(1);
         return c ?? null;
       }),
@@ -469,10 +455,9 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
-        const [result] = await db.insert(challenges).values({ ...input, status: "open" });
-        return { id: (result as any).insertId };
+        const db = getDb();
+        const [result] = await db.insert(challenges).values({ ...input, status: "open" }).returning({ id: challenges.id });
+        return { id: result!.id };
       }),
 
     update: adminProcedure
@@ -486,8 +471,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         const { id, ...rest } = input;
         await db.update(challenges).set(rest).where(eq(challenges.id, id));
         return { success: true };
@@ -499,8 +483,7 @@ export const appRouter = router({
     myEntries: protectedProcedure
       .input(z.object({ challengeId: z.number().optional() }).optional())
       .query(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         if (input?.challengeId) {
           return db
             .select()
@@ -523,8 +506,7 @@ export const appRouter = router({
     entryPlayers: protectedProcedure
       .input(z.object({ teamEntryId: z.number() }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         return db
           .select({
             id: players.id,
@@ -551,8 +533,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
 
         // Check challenge is open
         const [challenge] = await db
@@ -600,8 +581,8 @@ export const appRouter = router({
           captainId: input.captainId,
           viceCaptainId: input.viceCaptainId,
           totalPoints: "0.00",
-        });
-        const entryId = (result as any).insertId as number;
+        }).returning({ id: teamEntries.id });
+        const entryId = result!.id;
 
         await db.insert(teamEntryPlayers).values(
           input.playerIds.map(playerId => ({ teamEntryId: entryId, playerId }))
@@ -616,8 +597,7 @@ export const appRouter = router({
     byChallenge: publicProcedure
       .input(z.object({ challengeId: z.number(), limit: z.number().default(50) }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         return db
           .select({
             rank: teamEntries.rank,
@@ -637,8 +617,7 @@ export const appRouter = router({
     overall: publicProcedure
       .input(z.object({ limit: z.number().default(50) }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         return db
           .select({
             userId: teamEntries.userId,
@@ -658,8 +637,7 @@ export const appRouter = router({
   // ── Dashboard ─────────────────────────────────────────────────────────────
   dashboard: router({
     stats: protectedProcedure.query(async ({ ctx }) => {
-      const db = await getDb();
-      if (!db) return { totalEntries: 0, totalPoints: 0, bestRank: null, challengesJoined: 0 };
+      const db = getDb();
 
       const entries = await db
         .select()
@@ -682,8 +660,7 @@ export const appRouter = router({
     recentEntries: protectedProcedure
       .input(z.object({ limit: z.number().default(10) }))
       .query(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) return [];
+        const db = getDb();
         return db
           .select({
             id: teamEntries.id,
@@ -707,8 +684,7 @@ export const appRouter = router({
   // ── Admin ─────────────────────────────────────────────────────────────────
   admin: router({
     stats: adminProcedure.query(async () => {
-      const db = await getDb();
-      if (!db) return { users: 0, matches: 0, challenges: 0, entries: 0 };
+      const db = getDb();
       const [userCount] = await db.select({ count: sql<number>`COUNT(*)` }).from(users);
       const [matchCount] = await db.select({ count: sql<number>`COUNT(*)` }).from(matches);
       const [challengeCount] = await db.select({ count: sql<number>`COUNT(*)` }).from(challenges);
@@ -722,8 +698,7 @@ export const appRouter = router({
     }),
 
     allUsers: adminProcedure.query(async () => {
-      const db = await getDb();
-      if (!db) return [];
+      const db = getDb();
       return db
         .select({
           id: users.id,
@@ -741,10 +716,19 @@ export const appRouter = router({
     setUserRole: adminProcedure
       .input(z.object({ userId: z.number(), role: z.enum(["user", "admin"]) }))
       .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database unavailable");
+        const db = getDb();
         await db.update(users).set({ role: input.role }).where(eq(users.id, input.userId));
         return { success: true };
+      }),
+  }),
+
+  // ── System ────────────────────────────────────────────────────────────────
+  system: router({
+    notifyOwner: protectedProcedure
+      .input(z.object({ title: z.string(), content: z.string() }))
+      .mutation(async ({ input }) => {
+        const { notifyOwner } = await import("./_core/notification");
+        return notifyOwner({ title: input.title, content: input.content });
       }),
   }),
 });

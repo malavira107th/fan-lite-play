@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Trophy, LayoutDashboard, Calendar, Users, Flag, LogOut, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, Flag, LogOut, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 const navItems = [
@@ -41,16 +41,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <aside className="w-60 shrink-0 border-r border-border/60 flex flex-col"
         style={{ background: "oklch(0.11 0.016 155)" }}>
         {/* Logo */}
-        <div className="p-5 border-b border-border/60">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Trophy className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-gradient">Fan Lite Play</div>
-              <div className="text-xs text-muted-foreground">Admin Panel</div>
-            </div>
+        <div className="p-4 border-b border-border/60">
+          <Link href="/" className="flex items-center mb-1">
+            <img src="/logo.png" alt="Fan Lite Play" style={{height: '40px'}} className="w-auto object-contain" />
           </Link>
+          <div className="text-xs text-muted-foreground pl-1">Admin Panel</div>
         </div>
 
         {/* Nav */}

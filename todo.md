@@ -85,3 +85,4 @@
 - [x] Integrate logo into Navbar, Footer, Login, Register pages
 - [x] Set logo as favicon
 - [x] Replace AI logo with user-provided logo and favicon from uploaded ZIP
+- [x] Replace text wordmarks and Trophy icons with /logo.png on all pages (Login, Register, admin pages, etc.)

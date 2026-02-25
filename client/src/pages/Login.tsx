@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Trophy, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Login() {
@@ -45,11 +45,8 @@ export default function Login() {
           style={{ background: "linear-gradient(135deg, oklch(0.08 0.012 155 / 0.88) 0%, oklch(0.08 0.012 155 / 0.55) 100%)" }}
         />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-              <Trophy className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-lg text-foreground">Fan Lite Play</span>
+          <Link href="/" className="flex items-center">
+            <img src="/logo.png" alt="Fan Lite Play" style={{height: '48px'}} className="w-auto object-contain" />
           </Link>
           <div>
             <blockquote
@@ -66,11 +63,8 @@ export default function Login() {
       {/* Right: form panel */}
       <div className="flex-1 flex flex-col justify-center items-center px-6 py-12">
         {/* Mobile logo */}
-        <Link href="/" className="flex items-center gap-2.5 mb-10 lg:hidden">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Trophy className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="font-bold text-lg">Fan Lite Play</span>
+        <Link href="/" className="flex items-center mb-10 lg:hidden">
+          <img src="/logo.png" alt="Fan Lite Play" style={{height: '44px'}} className="w-auto object-contain" />
         </Link>
 
         <div className="w-full max-w-sm">

@@ -88,9 +88,9 @@
 - [x] Replace text wordmarks and Trophy icons with /logo.png on all pages (Login, Register, admin pages, etc.)
 
 ## Vercel Deployment Readiness
-- [ ] Create vercel.json with correct build/output/routes config
-- [ ] Remove vite-plugin-manus-runtime from production build (Manus-specific)
-- [ ] Remove vite-plugin-jsx-loc from production build (dev-only debug tool)
-- [ ] Add code splitting to reduce 1.18 MB JS bundle
-- [ ] Create .env.example documenting all required environment variables
-- [ ] Update GitHub with all Vercel-ready changes
+- [x] Create vercel.json with correct build/output/routes config
+- [x] Remove vite-plugin-manus-runtime from production build (Manus-specific)
+- [x] Remove vite-plugin-jsx-loc from production build (dev-only debug tool)
+- [x] Add code splitting to reduce 1.18 MB JS bundle
+- [x] Create VERCEL_SETUP.md documenting all required environment variables
+- [x] Update GitHub with all Vercel-ready changes

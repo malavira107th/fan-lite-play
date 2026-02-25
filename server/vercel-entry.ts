@@ -7,7 +7,7 @@
  * The Express app is created once (module-level) so it is reused across warm
  * invocations — avoiding a fresh DB connection on every request.
  */
-import { createApp } from "../server/_core/app";
+import { createApp } from "./_core/app";
 import path from "path";
 import fs from "fs";
 import express from "express";

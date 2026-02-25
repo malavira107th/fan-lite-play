@@ -927,7 +927,7 @@ function createApp() {
   return { app, server };
 }
 
-// api/server.ts
+// server/vercel-entry.ts
 import path from "path";
 import fs from "fs";
 import express2 from "express";

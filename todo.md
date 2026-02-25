@@ -58,3 +58,4 @@
 ## UI Improvements
 - [x] Redesign homepage hero section (more visually striking, asymmetric, elegant)
 - [x] Fix Navbar: hide Challenges and My Dashboard links from unauthenticated users
+- [x] Fix Footer: hide Challenges and My Dashboard links from unauthenticated users

@@ -1,8 +1,10 @@
 import { Link } from "wouter";
 import { Trophy, Mail, MapPin, Twitter, Instagram, Youtube } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { data: user } = trpc.auth.me.useQuery();
 
   return (
     <footer className="border-t border-border/60 bg-card/40 mt-auto">
@@ -40,17 +42,19 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Platform</h4>
             <ul className="space-y-2">
               {[
-                { href: "/challenges", label: "Challenges" },
-                { href: "/leaderboard", label: "Leaderboard" },
-                { href: "/how-it-works", label: "How It Works" },
-                { href: "/dashboard", label: "My Dashboard" },
-              ].map(l => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
+                { href: "/leaderboard", label: "Leaderboard", auth: false },
+                { href: "/how-it-works", label: "How It Works", auth: false },
+                { href: "/challenges", label: "Challenges", auth: true },
+                { href: "/dashboard", label: "My Dashboard", auth: true },
+              ]
+                .filter(l => !l.auth || !!user)
+                .map(l => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
 

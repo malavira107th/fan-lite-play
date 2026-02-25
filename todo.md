@@ -60,3 +60,4 @@
 - [x] Fix Navbar: hide Challenges and My Dashboard links from unauthenticated users
 - [x] Fix Footer: hide Challenges and My Dashboard links from unauthenticated users
 - [x] Move Leaderboard to auth-gated links in Navbar and Footer
+- [x] Redesign Footer with elegant layout and 18+ age restriction notice

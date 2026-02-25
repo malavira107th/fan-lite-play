@@ -50,7 +50,7 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <Link href="/" className="inline-flex items-center mb-5 group">
               <img
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/qSMEkVvseCWjpGFu.png"
+                src="/logo.png"
                 alt="Fan Lite Play"
                 className="h-10 w-auto object-contain"
               />

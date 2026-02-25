@@ -84,3 +84,4 @@
 - [x] Generate Fan Lite Play logo image
 - [x] Integrate logo into Navbar, Footer, Login, Register pages
 - [x] Set logo as favicon
+- [x] Replace AI logo with user-provided logo and favicon from uploaded ZIP

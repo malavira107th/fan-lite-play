@@ -52,7 +52,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0 group">
             <img
-              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/qSMEkVvseCWjpGFu.png"
+              src="/logo.png"
               alt="Fan Lite Play"
               className="h-9 w-auto object-contain"
             />

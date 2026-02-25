@@ -14,10 +14,11 @@ export default function Footer() {
   ].filter(l => !l.auth || !!user);
 
   const companyLinks = [
-    { href: "/about",   label: "About Us"       },
-    { href: "/contact", label: "Contact Us"     },
-    { href: "/terms",   label: "Terms of Use"   },
-    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/about",            label: "About Us"         },
+    { href: "/contact",          label: "Contact Us"       },
+    { href: "/responsible-play", label: "Responsible Play" },
+    { href: "/terms",            label: "Terms of Use"     },
+    { href: "/privacy",          label: "Privacy Policy"   },
   ];
 
   return (
@@ -181,9 +182,10 @@ export default function Footer() {
             This platform is strictly for users aged 18 and above.
           </p>
           <div className="flex items-center gap-4 order-3">
-            <Link href="/terms"   className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
-            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
-            <Link href="/contact" className="text-xs text-muted-foreground hover:text-primary transition-colors">Contact</Link>
+            <Link href="/terms"            className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
+            <Link href="/privacy"         className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
+            <Link href="/responsible-play" className="text-xs text-muted-foreground hover:text-primary transition-colors">Responsible Play</Link>
+            <Link href="/contact"          className="text-xs text-muted-foreground hover:text-primary transition-colors">Contact</Link>
           </div>
         </div>
       </div>

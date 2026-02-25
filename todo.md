@@ -73,3 +73,9 @@
 - [x] Redesign Privacy Policy page
 - [x] Redesign Login page
 - [x] Redesign Register page
+
+## Responsible Play
+- [x] Create Responsible Play page with 18+ notice, free-to-play statement, and support contact
+- [x] Add Responsible Play link to Footer
+- [x] Add Responsible Play link to Navbar (public)
+- [x] Add route in App.tsx

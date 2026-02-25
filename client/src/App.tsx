@@ -12,6 +12,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import ResponsiblePlay from "./pages/ResponsiblePlay";
 
 // Auth pages
 import Login from "./pages/Login";
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/responsible-play" component={ResponsiblePlay} />
 
       {/* Auth */}
       <Route path="/login" component={Login} />

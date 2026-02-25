@@ -15,8 +15,9 @@ import { useLocation as useWouterLocation } from "wouter";
 
 // Public links — always visible
 const publicLinks = [
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/about",        label: "About"         },
+  { href: "/how-it-works",    label: "How It Works"    },
+  { href: "/about",           label: "About"            },
+  { href: "/responsible-play", label: "Responsible Play" },
 ];
 
 // Auth-gated links — only for logged-in users

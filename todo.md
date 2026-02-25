@@ -96,9 +96,9 @@
 - [x] Update GitHub with all Vercel-ready changes
 
 ## Google Search Console / SEO Indexing
-- [ ] Create sitemap.xml with all public pages
-- [ ] Create robots.txt allowing all crawlers
-- [ ] Add comprehensive SEO meta tags (title, description, canonical, OG, Twitter) to index.html
-- [ ] Add JSON-LD structured data (Organization schema) to homepage
-- [ ] Push to GitHub and redeploy on Vercel
-- [ ] Update all SEO URLs from vercel.app to https://www.fanliteplay.com (sitemap, robots.txt, index.html, meta tags, JSON-LD)
+- [x] Create sitemap.xml with all public pages
+- [x] Create robots.txt allowing all crawlers
+- [x] Add comprehensive SEO meta tags (title, description, canonical, OG, Twitter) to index.html
+- [x] Add JSON-LD structured data (Organization schema) to homepage
+- [x] Push to GitHub and redeploy on Vercel
+- [x] Update all SEO URLs from vercel.app to https://www.fanliteplay.com (sitemap, robots.txt, index.html, meta tags, JSON-LD)

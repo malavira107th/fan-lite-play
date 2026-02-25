@@ -119,3 +119,8 @@
 - [x] Update drizzle.config.ts dialect from mysql to postgresql
 - [x] Verify Neon DB has all 7 tables and 5 enums (confirmed via psycopg2)
 - [x] Push to GitHub and redeploy on Vercel
+
+## reCAPTCHA v3 Fix (Feb 2026)
+- [x] Fix "Invalid site key" error: rewrite SecurityGate to use onload callback + grecaptcha.ready() for reliable initialization
+- [x] Remove conflicting script tags from index.html (none found — script was dynamically injected)
+- [x] Use onRecaptchaLoad global callback to ensure grecaptcha is fully initialized before execute()

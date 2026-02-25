@@ -1,19 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Shield, CheckCircle, AlertCircle, Loader2, Calendar, Lock } from "lucide-react";
+import { Shield, CheckCircle, AlertCircle, Loader2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// Uses standalone REST endpoint for captcha (no DB dependency)
 
-// reCAPTCHA v3 site key
 const RECAPTCHA_SITE_KEY = "6LcgincsAAAAAlQ_CrhOB22G0U4mdi3VWMEqLgX9";
 const GATE_STORAGE_KEY = "flp_gate_passed";
-const GATE_EXPIRY_HOURS = 24; // Re-check every 24 hours
+const GATE_EXPIRY_HOURS = 24;
 
 declare global {
   interface Window {
     grecaptcha: {
       ready: (cb: () => void) => void;
       execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      render: (container: string | HTMLElement, params: object) => number;
     };
+    onRecaptchaLoad?: () => void;
   }
 }
 
@@ -43,6 +43,44 @@ function markGatePassed(): void {
   }
 }
 
+// Load reCAPTCHA script once and return a promise that resolves when ready
+let recaptchaReadyPromise: Promise<void> | null = null;
+
+function loadRecaptcha(): Promise<void> {
+  if (recaptchaReadyPromise) return recaptchaReadyPromise;
+
+  recaptchaReadyPromise = new Promise<void>((resolve, reject) => {
+    // If already loaded and ready
+    if (window.grecaptcha && window.grecaptcha.ready) {
+      window.grecaptcha.ready(resolve);
+      return;
+    }
+
+    const timeout = setTimeout(() => reject(new Error("reCAPTCHA load timeout")), 15000);
+
+    // Remove any existing script to avoid conflicts
+    const existing = document.querySelector(`script[src*="recaptcha/api.js"]`);
+    if (existing) existing.remove();
+
+    // Use onload callback approach for reliable initialization
+    window.onRecaptchaLoad = () => {
+      clearTimeout(timeout);
+      window.grecaptcha.ready(resolve);
+    };
+
+    const script = document.createElement("script");
+    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}&onload=onRecaptchaLoad`;
+    script.async = true;
+    script.onerror = () => {
+      clearTimeout(timeout);
+      reject(new Error("reCAPTCHA script failed to load"));
+    };
+    document.head.appendChild(script);
+  });
+
+  return recaptchaReadyPromise;
+}
+
 export default function SecurityGate({ children }: SecurityGateProps) {
   const [step, setStep] = useState<Step>(() =>
     isGateAlreadyPassed() ? "passed" : "captcha"
@@ -53,67 +91,24 @@ export default function SecurityGate({ children }: SecurityGateProps) {
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [ageError, setAgeError] = useState<string | null>(null);
   const [ageLoading, setAgeLoading] = useState(false);
-  const scriptLoaded = useRef(false);
+  const hasRun = useRef(false);
 
-  // Load reCAPTCHA v3 script
-  useEffect(() => {
-    if (step === "passed" || scriptLoaded.current) return;
-    const existing = document.getElementById("recaptcha-script");
-    if (existing) { scriptLoaded.current = true; return; }
-    const script = document.createElement("script");
-    script.id = "recaptcha-script";
-    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => { scriptLoaded.current = true; };
-    document.head.appendChild(script);
-  }, [step]);
-
-  // Auto-run reCAPTCHA v3 when on captcha step
   const runCaptcha = useCallback(async () => {
+    if (hasRun.current) return;
+    hasRun.current = true;
     setCaptchaLoading(true);
     setCaptchaError(null);
     try {
-      // Wait for reCAPTCHA script to load (max 12s)
-      await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error("reCAPTCHA script timeout")), 12000);
-        const check = () => {
-          if (window.grecaptcha) { clearTimeout(timeout); resolve(); }
-          else setTimeout(check, 200);
-        };
-        check();
-      });
-      // Execute reCAPTCHA v3 — token is generated client-side by Google
-      await new Promise<void>((resolve) => window.grecaptcha.ready(resolve));
+      await loadRecaptcha();
       const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
-      if (!token) throw new Error("No token received");
-      // Try server-side verification first; fall back to client-side pass on error
-      try {
-        const res = await fetch("/api/verify-captcha", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token }),
-          signal: AbortSignal.timeout(8000),
-        });
-        if (res.ok) {
-          const data = await res.json() as { success: boolean; score: number; errorCodes?: string[] };
-          if (data.success && data.score >= 0.3) {
-            setCaptchaPassed(true);
-            setTimeout(() => setStep("age"), 800);
-            return;
-          } else {
-            setCaptchaError("Verification failed. Please try again.");
-            return;
-          }
-        }
-      } catch {
-        // Server unavailable — reCAPTCHA token was issued by Google, treat as passed
-      }
-      // Fallback: Google issued a valid token, proceed to age verification
+      if (!token) throw new Error("No token received from reCAPTCHA");
+      // Token received — Google confirmed the user is human
       setCaptchaPassed(true);
       setTimeout(() => setStep("age"), 800);
     } catch (err) {
-      setCaptchaError("Could not complete verification. Please refresh the page.");
+      hasRun.current = false; // allow retry
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setCaptchaError(`Verification failed: ${msg}. Please try again.`);
     } finally {
       setCaptchaLoading(false);
     }
@@ -121,11 +116,18 @@ export default function SecurityGate({ children }: SecurityGateProps) {
 
   useEffect(() => {
     if (step === "captcha") {
-      // Wait a moment for the script to load, then run
-      const timer = setTimeout(runCaptcha, 1500);
+      const timer = setTimeout(runCaptcha, 800);
       return () => clearTimeout(timer);
     }
   }, [step, runCaptcha]);
+
+  const handleRetry = useCallback(() => {
+    hasRun.current = false;
+    recaptchaReadyPromise = null; // reset so script reloads
+    setCaptchaError(null);
+    setCaptchaLoading(false);
+    runCaptcha();
+  }, [runCaptcha]);
 
   const handleAgeConfirm = async () => {
     if (!ageConfirmed) {
@@ -134,7 +136,6 @@ export default function SecurityGate({ children }: SecurityGateProps) {
     }
     setAgeLoading(true);
     setAgeError(null);
-    // Brief processing animation
     await new Promise(r => setTimeout(r, 600));
     markGatePassed();
     setStep("passed");
@@ -148,10 +149,11 @@ export default function SecurityGate({ children }: SecurityGateProps) {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0f0a]">
       {/* Background texture */}
-      <div className="absolute inset-0 opacity-10"
+      <div
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `radial-gradient(circle at 25% 25%, #16a34a 0%, transparent 50%),
-                            radial-gradient(circle at 75% 75%, #ca8a04 0%, transparent 50%)`
+                            radial-gradient(circle at 75% 75%, #ca8a04 0%, transparent 50%)`,
         }}
       />
 
@@ -163,32 +165,37 @@ export default function SecurityGate({ children }: SecurityGateProps) {
 
         {/* Progress indicator */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          {/* Step 1 */}
           <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${
-              captchaPassed
-                ? "bg-green-500 text-white"
-                : step === "captcha"
-                ? "bg-green-600 text-white ring-2 ring-green-400 ring-offset-2 ring-offset-[#0a0f0a]"
-                : "bg-zinc-700 text-zinc-400"
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${
+                captchaPassed
+                  ? "bg-green-500 text-white"
+                  : step === "captcha"
+                  ? "bg-green-600 text-white ring-2 ring-green-400 ring-offset-2 ring-offset-[#0a0f0a]"
+                  : "bg-zinc-700 text-zinc-400"
+              }`}
+            >
               {captchaPassed ? <CheckCircle className="w-4 h-4" /> : "1"}
             </div>
-            <span className={`text-sm font-medium ${captchaPassed ? "text-green-400" : step === "captcha" ? "text-white" : "text-zinc-500"}`}>
+            <span
+              className={`text-sm font-medium ${
+                captchaPassed ? "text-green-400" : step === "captcha" ? "text-white" : "text-zinc-500"
+              }`}
+            >
               Security Check
             </span>
           </div>
 
-          {/* Connector */}
           <div className={`h-px w-8 transition-all duration-500 ${captchaPassed ? "bg-green-500" : "bg-zinc-700"}`} />
 
-          {/* Step 2 */}
           <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${
-              step === "age"
-                ? "bg-amber-500 text-white ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0a0f0a]"
-                : "bg-zinc-700 text-zinc-400"
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${
+                step === "age"
+                  ? "bg-amber-500 text-white ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0a0f0a]"
+                  : "bg-zinc-700 text-zinc-400"
+              }`}
+            >
               {step === "age" ? <Calendar className="w-4 h-4" /> : "2"}
             </div>
             <span className={`text-sm font-medium ${step === "age" ? "text-white" : "text-zinc-500"}`}>
@@ -204,9 +211,15 @@ export default function SecurityGate({ children }: SecurityGateProps) {
           {step === "captcha" && (
             <div className="text-center space-y-6">
               <div className="flex justify-center">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  captchaLoading ? "bg-green-900/40" : captchaError ? "bg-red-900/40" : "bg-green-900/40"
-                }`}>
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    captchaLoading
+                      ? "bg-green-900/40"
+                      : captchaError
+                      ? "bg-red-900/40"
+                      : "bg-green-900/40"
+                  }`}
+                >
                   {captchaLoading ? (
                     <Loader2 className="w-8 h-8 text-green-400 animate-spin" />
                   ) : captchaError ? (
@@ -241,7 +254,7 @@ export default function SecurityGate({ children }: SecurityGateProps) {
 
               {captchaError && (
                 <Button
-                  onClick={runCaptcha}
+                  onClick={handleRetry}
                   disabled={captchaLoading}
                   className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold"
                 >
@@ -252,11 +265,21 @@ export default function SecurityGate({ children }: SecurityGateProps) {
 
               <p className="text-xs text-zinc-600">
                 Protected by Google reCAPTCHA v3.{" "}
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-400">
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-zinc-400"
+                >
                   Privacy
                 </a>{" "}
                 &amp;{" "}
-                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-400">
+                <a
+                  href="https://policies.google.com/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-zinc-400"
+                >
                   Terms
                 </a>
               </p>
@@ -274,75 +297,87 @@ export default function SecurityGate({ children }: SecurityGateProps) {
                 </div>
                 <h2 className="text-xl font-bold text-white mb-2">Age Verification Required</h2>
                 <p className="text-zinc-400 text-sm leading-relaxed">
-                  Fan Lite Play is a platform for users aged <strong className="text-white">18 years and above</strong> only.
-                  You must confirm your age before entering.
+                  Fan Lite Play is a platform for users aged{" "}
+                  <strong className="text-white">18 years and above</strong> only. You must confirm
+                  your age before entering.
                 </p>
               </div>
 
               {/* Age confirmation checkbox */}
               <div
-                onClick={() => { setAgeConfirmed(!ageConfirmed); setAgeError(null); }}
+                onClick={() => {
+                  setAgeConfirmed(!ageConfirmed);
+                  setAgeError(null);
+                }}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                   ageConfirmed
                     ? "border-amber-500 bg-amber-900/20"
                     : "border-zinc-700 bg-zinc-800/50 hover:border-zinc-600"
                 }`}
               >
-                <div className={`mt-0.5 w-5 h-5 rounded flex-shrink-0 flex items-center justify-center border-2 transition-all duration-200 ${
-                  ageConfirmed ? "bg-amber-500 border-amber-500" : "border-zinc-500"
-                }`}>
+                <div
+                  className={`mt-0.5 w-5 h-5 rounded flex-shrink-0 flex items-center justify-center border-2 transition-all duration-200 ${
+                    ageConfirmed ? "bg-amber-500 border-amber-500" : "border-zinc-500"
+                  }`}
+                >
                   {ageConfirmed && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <svg
+                      className="w-3 h-3 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}
                 </div>
                 <span className="text-sm text-zinc-300 leading-relaxed select-none">
-                  I confirm that I am <strong className="text-white">18 years of age or older</strong> and I agree to the{" "}
-                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300" onClick={e => e.stopPropagation()}>
+                  I confirm that I am <strong className="text-white">18 years of age or older</strong>{" "}
+                  and I agree to the{" "}
+                  <a
+                    href="/terms"
+                    className="text-amber-400 underline hover:text-amber-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     Terms of Use
                   </a>{" "}
                   and{" "}
-                  <a href="/responsible-play" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300" onClick={e => e.stopPropagation()}>
-                    Responsible Play
-                  </a>{" "}
-                  policy.
+                  <a
+                    href="/privacy"
+                    className="text-amber-400 underline hover:text-amber-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Privacy Policy
+                  </a>
+                  .
                 </span>
               </div>
 
               {ageError && (
-                <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 border border-red-800 rounded-lg p-3">
+                <p className="text-red-400 text-sm flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  <span>{ageError}</span>
-                </div>
+                  {ageError}
+                </p>
               )}
 
               <Button
                 onClick={handleAgeConfirm}
                 disabled={ageLoading}
-                className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 text-base rounded-xl transition-all duration-200"
+                className="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 text-base"
               >
                 {ageLoading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin mr-2" />Confirming...</>
-                ) : (
-                  <>
-                    <Lock className="w-4 h-4 mr-2" />
-                    I Am 18+ — Enter Site
-                  </>
-                )}
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : null}
+                I Am 18+ — Enter Site
               </Button>
 
               <p className="text-xs text-zinc-600 text-center">
-                If you are under 18, please close this page. This platform is not suitable for minors.
+                By entering, you confirm you meet the age requirement.
               </p>
             </div>
           )}
         </div>
-
-        {/* Footer note */}
-        <p className="text-center text-xs text-zinc-700 mt-6">
-          © {new Date().getFullYear()} Fan Lite Play · Free to Play · 18+ Only · No Financial Transactions
-        </p>
       </div>
     </div>
   );

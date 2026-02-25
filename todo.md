@@ -61,3 +61,15 @@
 - [x] Fix Footer: hide Challenges and My Dashboard links from unauthenticated users
 - [x] Move Leaderboard to auth-gated links in Navbar and Footer
 - [x] Redesign Footer with elegant layout and 18+ age restriction notice
+
+## Full Website Redesign
+- [x] Redesign Homepage as clean, honest landing page (remove fake data, real images)
+- [x] Redesign Navbar (clean, minimal, no confusion)
+- [x] Redesign Footer (already done, keep 18+ notice)
+- [x] Redesign About Us page
+- [x] Redesign How It Works page
+- [x] Redesign Contact Us page
+- [x] Redesign Terms of Use page
+- [x] Redesign Privacy Policy page
+- [x] Redesign Login page
+- [x] Redesign Register page

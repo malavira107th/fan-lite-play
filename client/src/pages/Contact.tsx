@@ -4,106 +4,106 @@ import { Mail, MapPin, Clock, MessageSquare } from "lucide-react";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1 pt-24">
-        <section className="py-20 gradient-hero border-b border-border/60">
-          <div className="container max-w-3xl text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-6">
-              <MessageSquare className="w-8 h-8 text-primary" />
+
+      {/* Hero */}
+      <section className="relative pt-32 pb-16 overflow-hidden">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 50% at 50% 0%, oklch(0.72 0.18 145 / 0.06), transparent)" }} />
+        <div className="container relative z-10 max-w-2xl mx-auto text-center">
+          <div className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">Contact Us</div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Get in Touch
+          </h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            Have a question, a suggestion, or need help with your account? We are here to help. Reach out to us using any of the details below.
+          </p>
+        </div>
+      </section>
+
+      {/* Contact cards */}
+      <section className="py-16 border-t border-border/40">
+        <div className="container max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 mb-14">
+            {/* Email */}
+            <div className="rounded-2xl border border-border/60 bg-card/60 p-7 text-center hover:border-primary/30 transition-colors">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">Email Support</h3>
+              <p className="text-sm text-muted-foreground mb-3">For general queries, account help, and feedback</p>
+              <a
+                href="mailto:support@fanliteplay.com"
+                className="text-primary text-sm font-medium hover:underline"
+              >
+                support@fanliteplay.com
+              </a>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Get in <span className="text-gradient">Touch</span>
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Have a question, a suggestion, or just want to say hello? We would love to hear from you. Our team is here to help.
-            </p>
-          </div>
-        </section>
 
-        <section className="py-20">
-          <div className="container max-w-4xl">
-            <div className="grid md:grid-cols-2 gap-12">
-              {/* Contact Info */}
-              <div>
-                <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Contact Information
-                </h2>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4 p-5 glass-card rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Email Support</h3>
-                      <a href="mailto:support@fanliteplay.com" className="text-primary hover:underline text-sm">
-                        support@fanliteplay.com
-                      </a>
-                      <p className="text-xs text-muted-foreground mt-1">We respond within 24 hours</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-5 glass-card rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Office Address</h3>
-                      <address className="text-sm text-muted-foreground not-italic leading-relaxed">
-                        Fan Lite Play<br />
-                        F-73, DLF Promenade Mall,<br />
-                        Nelson Mandela Marg, Vasant Kunj,<br />
-                        New Delhi, Delhi – 110070, India
-                      </address>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-5 glass-card rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                      <Clock className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Support Hours</h3>
-                      <p className="text-sm text-muted-foreground">Monday – Saturday</p>
-                      <p className="text-sm text-muted-foreground">10:00 AM – 6:00 PM IST</p>
-                    </div>
-                  </div>
-                </div>
+            {/* Address */}
+            <div className="rounded-2xl border border-border/60 bg-card/60 p-7 text-center hover:border-primary/30 transition-colors">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-5 h-5 text-primary" />
               </div>
+              <h3 className="font-semibold text-foreground mb-2">Our Address</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                F-73, DLF Promenade Mall,<br />
+                Nelson Mandela Marg,<br />
+                Vasant Kunj, New Delhi,<br />
+                Delhi – 110070, India
+              </p>
+            </div>
 
-              {/* FAQ */}
-              <div>
-                <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Frequently Asked Questions
-                </h2>
-                <div className="space-y-4">
-                  {[
-                    {
-                      q: "Is Fan Lite Play free to use?",
-                      a: "Yes, Fan Lite Play is completely free. There are no charges, transactions, or hidden fees of any kind.",
-                    },
-                    {
-                      q: "How are points calculated?",
-                      a: "Points are based on real player performances in live matches — runs, wickets, catches, and more. Visit our How It Works page for the full scoring system.",
-                    },
-                    {
-                      q: "Can I create multiple teams for one challenge?",
-                      a: "Yes! You can create up to the maximum number of entries allowed per challenge to test different strategies.",
-                    },
-                    {
-                      q: "How do I report an issue?",
-                      a: "Email us at support@fanliteplay.com with a description of the issue and we will get back to you promptly.",
-                    },
-                  ].map((faq, i) => (
-                    <div key={i} className="glass-card rounded-xl p-5">
-                      <h3 className="font-semibold text-sm mb-2">{faq.q}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
-                    </div>
-                  ))}
-                </div>
+            {/* Response time */}
+            <div className="rounded-2xl border border-border/60 bg-card/60 p-7 text-center hover:border-primary/30 transition-colors">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-5 h-5 text-primary" />
               </div>
+              <h3 className="font-semibold text-foreground mb-2">Response Time</h3>
+              <p className="text-sm text-muted-foreground mb-3">We aim to respond to all queries within</p>
+              <span className="text-primary text-sm font-medium">1–2 business days</span>
             </div>
           </div>
-        </section>
-      </main>
+
+          {/* Common questions */}
+          <div className="rounded-2xl border border-border/60 bg-card/60 p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <MessageSquare className="w-5 h-5 text-primary" />
+              <h2 className="text-xl font-semibold">Common Questions</h2>
+            </div>
+            <div className="space-y-0">
+              {[
+                {
+                  q: "How do I reset my password?",
+                  a: "If you have forgotten your password, please email us at support@fanliteplay.com with the subject line 'Password Reset' and your registered email address. We will assist you promptly.",
+                },
+                {
+                  q: "Is Fan Lite Play really free?",
+                  a: "Yes, Fan Lite Play is entirely free to use. There are no charges, no transactions, and no premium tiers. Every feature on the platform is available at no cost.",
+                },
+                {
+                  q: "Who can use Fan Lite Play?",
+                  a: "Fan Lite Play is available to users aged 18 and above. By registering, you confirm that you meet this age requirement.",
+                },
+                {
+                  q: "How are points calculated?",
+                  a: "Points are based on real player performance data entered by our admin team after each match. Visit our How It Works page for the full points breakdown.",
+                },
+                {
+                  q: "I found a bug or have a suggestion. How do I report it?",
+                  a: "We welcome all feedback. Please email us at support@fanliteplay.com with a description of the issue or your suggestion. Your input helps us improve the platform.",
+                },
+              ].map((item, i) => (
+                <div key={item.q} className={`py-5 ${i > 0 ? "border-t border-border/40" : ""}`}>
+                  <h3 className="font-medium text-foreground mb-2">{item.q}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

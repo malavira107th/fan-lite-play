@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { trpc } from "@/lib/trpc";
+import { useState } from "react";
+import { Trophy, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Trophy, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,154 +9,196 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { useLocation as useWouterLocation } from "wouter";
 
-// Always visible to everyone
-const publicNavLinks = [
+// Public links — always visible
+const publicLinks = [
   { href: "/how-it-works", label: "How It Works" },
-  { href: "/about", label: "About" },
+  { href: "/about",        label: "About"         },
 ];
 
-// Only visible to logged-in users
-const authNavLinks = [
-  { href: "/challenges", label: "Challenges" },
-  { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/dashboard", label: "My Dashboard" },
+// Auth-gated links — only for logged-in users
+const authLinks = [
+  { href: "/challenges",  label: "Challenges"   },
+  { href: "/leaderboard", label: "Leaderboard"  },
+  { href: "/dashboard",   label: "My Dashboard" },
 ];
 
 export default function Navbar() {
   const [location] = useLocation();
+  const [, navigate] = useWouterLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const { data: user } = trpc.auth.me.useQuery();
   const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: () => { window.location.href = "/"; },
+    onSuccess: () => {
+      toast.success("Signed out successfully");
+      navigate("/");
+    },
   });
 
+  const isActive = (href: string) => location === href;
+
+  const navLinks = [...publicLinks, ...(user ? authLinks : [])];
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/60"
-      style={{ background: "oklch(0.10 0.015 155 / 0.92)", backdropFilter: "blur(16px)" }}>
-      <div className="container flex items-center justify-between h-16">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-            <Trophy className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="font-bold text-lg tracking-tight">
-            <span className="text-gradient">Fan Lite</span>
-            <span className="text-foreground"> Play</span>
-          </span>
-        </Link>
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-border/50 backdrop-blur-md" style={{ background: "oklch(0.08 0.012 155 / 0.92)" }}>
+      <div className="container">
+        <div className="flex items-center justify-between h-16">
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
-          {[...publicNavLinks, ...(user ? authNavLinks : [])].map(link => (
-            <Link key={link.href} href={link.href}>
-              <span className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer
-                ${location === link.href
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}>
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-md shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
+              <Trophy className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-lg tracking-tight">
+              <span className="text-gradient">Fan Lite</span>
+              <span className="text-foreground"> Play</span>
+            </span>
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
+                  isActive(link.href)
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                }`}
+              >
                 {link.label}
-              </span>
-            </Link>
-          ))}
-        </div>
-
-        {/* Desktop Auth */}
-        <div className="hidden md:flex items-center gap-3">
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2 text-sm">
-                  <div className="w-7 h-7 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-xs font-bold text-primary">
-                    {(user.name ?? user.username ?? "U")[0]?.toUpperCase()}
-                  </div>
-                  <span className="max-w-[100px] truncate">{user.name ?? user.username}</span>
-                  <ChevronDown className="w-3 h-3 opacity-60" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="cursor-pointer">Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="cursor-pointer">Profile</Link>
-                </DropdownMenuItem>
-                {user.role === "admin" && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin" className="cursor-pointer text-primary">Admin Panel</Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-destructive cursor-pointer"
-                  onClick={() => logoutMutation.mutate()}>
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <>
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Sign In</Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm" className="shadow-lg shadow-primary/20">
-                  Play Free
-                </Button>
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden p-2 rounded-md text-muted-foreground hover:text-foreground"
-          onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-border/60 bg-card/95 backdrop-blur-lg">
-          <div className="container py-4 flex flex-col gap-1">
-            {[...publicNavLinks, ...(user ? authNavLinks : [])].map(link => (
-              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
-                <span className={`block px-3 py-2 rounded-md text-sm font-medium cursor-pointer
-                  ${location === link.href ? "text-primary bg-primary/10" : "text-muted-foreground"}`}>
-                  {link.label}
-                </span>
               </Link>
             ))}
-            <div className="flex gap-2 mt-3 pt-3 border-t border-border/60">
+          </nav>
+
+          {/* Desktop right side */}
+          <div className="hidden md:flex items-center gap-2">
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary/60 transition-colors text-sm font-medium text-muted-foreground hover:text-foreground">
+                    <div className="w-7 h-7 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">
+                      {(user.name ?? user.email ?? "U")[0].toUpperCase()}
+                    </div>
+                    <span className="max-w-[120px] truncate">{user.name ?? user.email}</span>
+                    <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="flex items-center gap-2 cursor-pointer">
+                      <LayoutDashboard className="w-4 h-4" /> My Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
+                      <User className="w-4 h-4" /> Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  {user.role === "admin" && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="flex items-center gap-2 cursor-pointer text-primary">
+                          <Settings className="w-4 h-4" /> Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                    onClick={() => logoutMutation.mutate()}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" /> Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm" className="shadow-md shadow-primary/20">
+                    Play Free
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md">
+          <div className="container py-4 space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive(link.href)
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-3 border-t border-border/50 mt-3 space-y-2">
               {user ? (
                 <>
-                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="flex-1">
-                    <Button variant="secondary" size="sm" className="w-full">Dashboard</Button>
-                  </Link>
-                  <Button
-                    variant="ghost" size="sm" className="flex-1 text-destructive"
-                    onClick={() => { logoutMutation.mutate(); setMobileOpen(false); }}>
+                  <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
+                    <div className="w-7 h-7 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">
+                      {(user.name ?? user.email ?? "U")[0].toUpperCase()}
+                    </div>
+                    <span className="truncate">{user.name ?? user.email}</span>
+                  </div>
+                  {user.role === "admin" && (
+                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-primary/10 transition-colors">
+                      Admin Panel
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => { logoutMutation.mutate(); setMobileOpen(false); }}
+                    className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+                  >
                     Sign Out
-                  </Button>
+                  </button>
                 </>
               ) : (
-                <>
+                <div className="flex gap-2">
                   <Link href="/login" onClick={() => setMobileOpen(false)} className="flex-1">
-                    <Button variant="ghost" size="sm" className="w-full">Sign In</Button>
+                    <Button variant="outline" size="sm" className="w-full">Sign In</Button>
                   </Link>
                   <Link href="/register" onClick={() => setMobileOpen(false)} className="flex-1">
                     <Button size="sm" className="w-full">Play Free</Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

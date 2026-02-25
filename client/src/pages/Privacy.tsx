@@ -1,89 +1,94 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Lock } from "lucide-react";
 
 const sections = [
   {
     title: "1. Introduction",
-    content: "Fan Lite Play (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our cricket strategy platform. Please read this policy carefully. If you disagree with its terms, please discontinue use of the Platform.",
+    content: `Fan Lite Play ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains what information we collect, how we use it, and how we protect it when you use our platform. By using Fan Lite Play, you agree to the collection and use of information in accordance with this policy.`,
   },
   {
     title: "2. Information We Collect",
-    content: "We collect information you provide directly when you register, such as your username, email address, and password (stored in encrypted form). We also collect data related to your platform activity, including team selections, challenge participation, and leaderboard performance. We may collect technical data such as your IP address, browser type, and device information to ensure the security and proper functioning of the Platform.",
+    content: `We collect the following information when you register and use Fan Lite Play: your name, email address, and password (stored in encrypted form) when you create an account; your team selections, challenge entries, and leaderboard activity while using the platform; and basic usage data such as pages visited and features used, collected automatically to help us improve the platform.`,
   },
   {
     title: "3. How We Use Your Information",
-    content: "We use the information we collect to operate and maintain the Platform, to create and manage your account, to personalize your experience, to process your team entries and calculate performance scores, to communicate with you about your account and platform updates, and to improve the Platform based on usage patterns and feedback.",
+    content: `We use the information we collect to: create and manage your account; operate the platform and provide its features, including team building, challenges, and leaderboards; communicate with you about your account or in response to your support queries; improve the platform based on usage patterns; and ensure compliance with our Terms of Use, including age verification requirements.`,
   },
   {
-    title: "4. Information Sharing and Disclosure",
-    content: "We do not sell, trade, or rent your personal information to third parties for marketing purposes. We may share your information with trusted service providers who assist us in operating the Platform, provided they agree to keep your information confidential. We may disclose your information if required to do so by law or in response to valid legal requests.",
+    title: "4. Data Storage and Security",
+    content: `Your data is stored on secure servers. Passwords are stored using industry-standard encryption (bcrypt hashing) and are never stored in plain text. We take reasonable technical and organisational measures to protect your personal information from unauthorised access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.`,
   },
   {
-    title: "5. Data Security",
-    content: "We implement a variety of security measures to protect your personal information. Passwords are stored using industry-standard bcrypt hashing. Sessions are managed using secure, HTTP-only cookies. We use HTTPS encryption for all data transmitted between your browser and our servers. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.",
+    title: "5. Sharing of Information",
+    content: `We do not sell, trade, or rent your personal information to third parties. We may share your information with trusted service providers who assist us in operating the platform, provided they agree to keep your information confidential. We may also disclose your information if required by law or to protect the rights, property, or safety of Fan Lite Play, our users, or others.`,
   },
   {
-    title: "6. Data Retention",
-    content: "We retain your personal information for as long as your account is active or as needed to provide you with our services. If you wish to delete your account, please contact us at support@fanliteplay.com. We will delete your personal data within a reasonable timeframe, except where we are required to retain it by law.",
+    title: "6. Cookies and Tracking",
+    content: `Fan Lite Play uses session cookies to maintain your login state while you use the platform. These cookies are essential for the platform to function correctly and are deleted when you sign out or close your browser. We do not use third-party advertising cookies or tracking technologies.`,
   },
   {
     title: "7. Your Rights",
-    content: "You have the right to access, correct, or delete your personal information. You may update your account information at any time through your profile settings. You may request a copy of the personal data we hold about you by contacting us at support@fanliteplay.com. You may also request that we restrict the processing of your data or object to its use.",
+    content: `You have the right to access the personal information we hold about you, to request correction of inaccurate data, and to request deletion of your account and associated data. To exercise any of these rights, please contact us at support@fanliteplay.com. We will respond to your request within a reasonable timeframe.`,
   },
   {
-    title: "8. Cookies",
-    content: "We use session cookies to maintain your login state and provide a seamless experience on the Platform. These cookies are essential for the Platform to function correctly. We do not use tracking cookies or third-party advertising cookies.",
+    title: "8. Data Retention",
+    content: `We retain your account information for as long as your account is active. If you request deletion of your account, we will remove your personal information from our systems within a reasonable period, except where we are required to retain it for legal or compliance purposes.`,
   },
   {
     title: "9. Children's Privacy",
-    content: "Fan Lite Play is not intended for users under the age of 18. We do not knowingly collect personal information from children. If we become aware that a child under 18 has provided us with personal information, we will take steps to delete such information promptly.",
+    content: `Fan Lite Play is not intended for users under the age of 18. We do not knowingly collect personal information from individuals under 18. If we become aware that we have collected personal information from a user under 18, we will take steps to delete that information promptly.`,
   },
   {
     title: "10. Changes to This Policy",
-    content: "We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting a notice on the Platform. Your continued use of the Platform after any changes constitutes your acceptance of the updated policy.",
+    content: `We may update this Privacy Policy from time to time. We will notify users of significant changes by posting a notice on the platform. Your continued use of Fan Lite Play after any changes constitutes your acceptance of the updated policy. We encourage you to review this policy periodically.`,
   },
   {
     title: "11. Contact Us",
-    content: "If you have any questions or concerns about this Privacy Policy, please contact us at support@fanliteplay.com or write to us at: F-73, DLF Promenade Mall, Nelson Mandela Marg, Vasant Kunj, New Delhi, Delhi – 110070, India.",
+    content: `If you have any questions or concerns about this Privacy Policy or how we handle your data, please contact us at support@fanliteplay.com or write to us at F-73, DLF Promenade Mall, Nelson Mandela Marg, Vasant Kunj, New Delhi, Delhi – 110070, India.`,
   },
 ];
 
 export default function Privacy() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1 pt-24">
-        <section className="py-16 gradient-hero border-b border-border/60">
-          <div className="container max-w-3xl text-center">
-            <div className="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-5">
-              <Lock className="w-7 h-7 text-primary" />
-            </div>
-            <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Privacy <span className="text-gradient">Policy</span>
-            </h1>
-            <p className="text-muted-foreground">Last updated: February 2025</p>
-          </div>
-        </section>
 
-        <section className="py-16">
-          <div className="container max-w-3xl">
-            <div className="glass-card rounded-xl p-8 mb-6">
-              <p className="text-muted-foreground leading-relaxed">
-                Your privacy matters to us. Fan Lite Play is a free entertainment platform and does not process any financial information. This policy explains how we handle the limited personal data we collect to operate our cricket strategy platform.
-              </p>
-            </div>
-            <div className="space-y-6">
-              {sections.map((s, i) => (
-                <div key={i} className="glass-card rounded-xl p-6">
-                  <h2 className="font-semibold text-foreground mb-3">{s.title}</h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{s.content}</p>
-                </div>
-              ))}
-            </div>
+      {/* Header */}
+      <section className="pt-32 pb-10 border-b border-border/40">
+        <div className="container max-w-3xl mx-auto">
+          <div className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">Legal</div>
+          <h1 className="text-4xl font-bold mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Privacy Policy
+          </h1>
+          <p className="text-sm text-muted-foreground">Last updated: February 2025</p>
+        </div>
+      </section>
+
+      {/* Intro notice */}
+      <section className="pt-10 pb-0">
+        <div className="container max-w-3xl mx-auto">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 mb-10">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Fan Lite Play does not collect financial information of any kind. We do not process payments, store card details, or handle any monetary transactions. This policy covers only the personal information required to operate your account and the platform.
+            </p>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+
+      {/* Sections */}
+      <section className="pb-20">
+        <div className="container max-w-3xl mx-auto">
+          <div className="space-y-0">
+            {sections.map((section, i) => (
+              <div key={section.title} className={`py-8 ${i < sections.length - 1 ? "border-b border-border/30" : ""}`}>
+                <h2 className="text-base font-semibold text-foreground mb-3">{section.title}</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">{section.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

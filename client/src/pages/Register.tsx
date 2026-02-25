@@ -4,13 +4,18 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Trophy, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Trophy, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Register() {
   const [, navigate] = useLocation();
-  const [form, setForm] = useState({ username: "", email: "", password: "", name: "" });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
 
   const registerMutation = trpc.auth.register.useMutation({
     onSuccess: () => {
@@ -24,145 +29,176 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    registerMutation.mutate(form);
+    if (!ageConfirmed) {
+      toast.error("You must confirm you are 18 or older to register.");
+      return;
+    }
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters.");
+      return;
+    }
+    registerMutation.mutate({ name, email, password, username });
   };
 
-  const perks = [
-    "Free to play, always",
-    "Build unlimited teams",
-    "Compete on leaderboards",
-    "Real match performance tracking",
-  ];
-
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-hero pitch-pattern p-4">
-      <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">
-        {/* Left: Perks */}
-        <div className="hidden md:block">
-          <Link href="/" className="inline-flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+    <div className="min-h-screen flex bg-background">
+      {/* Left: image panel — hidden on mobile */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1000&q=80&auto=format&fit=crop')` }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(135deg, oklch(0.08 0.012 155 / 0.88) 0%, oklch(0.08 0.012 155 / 0.55) 100%)" }}
+        />
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
               <Trophy className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl">
-              <span className="text-gradient">Fan Lite</span>
-              <span className="text-foreground"> Play</span>
-            </span>
+            <span className="font-bold text-lg text-foreground">Fan Lite Play</span>
           </Link>
-          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Join the Cricket Strategy Community
-          </h2>
-          <p className="text-muted-foreground mb-8 leading-relaxed">
-            Create your free account and start building teams, competing in challenges, and proving your cricket knowledge.
-          </p>
-          <ul className="space-y-3">
-            {perks.map((perk) => (
-              <li key={perk} className="flex items-center gap-3 text-sm">
-                <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-foreground">{perk}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Right: Form */}
-        <div>
-          <div className="text-center mb-6 md:hidden">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-                <Trophy className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-bold text-lg">
-                <span className="text-gradient">Fan Lite</span>
-                <span className="text-foreground"> Play</span>
-              </span>
-            </Link>
+          <div>
+            <blockquote
+              className="text-2xl font-bold leading-snug mb-4 text-foreground"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              "Every great innings starts<br />with a single decision."
+            </blockquote>
+            <p className="text-sm text-muted-foreground">Join cricket fans building smarter teams every match day.</p>
           </div>
-          <div className="glass-card rounded-2xl p-8">
-            <h1 className="text-xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Create Your Account
-            </h1>
-            <p className="text-sm text-muted-foreground mb-6">Free forever. No credit card needed.</p>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Your name"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="bg-secondary/50 border-border/60 focus:border-primary"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username <span className="text-destructive">*</span></Label>
-                  <Input
-                    id="username"
-                    placeholder="cricketfan99"
-                    value={form.username}
-                    onChange={(e) => setForm({ ...form, username: e.target.value })}
-                    required
-                    pattern="[a-zA-Z0-9_]+"
-                    minLength={3}
-                    maxLength={32}
-                    className="bg-secondary/50 border-border/60 focus:border-primary"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address <span className="text-destructive">*</span></Label>
+        </div>
+      </div>
+
+      {/* Right: form panel */}
+      <div className="flex-1 flex flex-col justify-center items-center px-6 py-12">
+        {/* Mobile logo */}
+        <Link href="/" className="flex items-center gap-2.5 mb-10 lg:hidden">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <Trophy className="w-4 h-4 text-primary-foreground" />
+          </div>
+          <span className="font-bold text-lg">Fan Lite Play</span>
+        </Link>
+
+        <div className="w-full max-w-sm">
+          <h1
+            className="text-2xl font-bold mb-1.5 text-foreground"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Create Your Account
+          </h1>
+          <p className="text-sm text-muted-foreground mb-8">
+            Free to join. No credit card required.
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="cricketfan99"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                pattern="[a-zA-Z0-9_]+"
+                minLength={3}
+                maxLength={32}
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="At least 8 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
                   required
-                  autoComplete="email"
-                  className="bg-secondary/50 border-border/60 focus:border-primary"
+                  minLength={8}
+                  className="pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password <span className="text-destructive">*</span></Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Minimum 8 characters"
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    required
-                    minLength={8}
-                    autoComplete="new-password"
-                    className="bg-secondary/50 border-border/60 focus:border-primary pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-              <Button
-                type="submit"
-                className="w-full shadow-lg shadow-primary/20 mt-2"
-                disabled={registerMutation.isPending}>
-                {registerMutation.isPending ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating Account...</>
-                ) : "Create Free Account"}
-              </Button>
-              <p className="text-xs text-muted-foreground text-center">
-                By registering, you agree to our{" "}
+            </div>
+
+            {/* 18+ age confirmation */}
+            <div className="flex items-start gap-3 rounded-xl border border-border/60 bg-card/50 p-4">
+              <Checkbox
+                id="age"
+                checked={ageConfirmed}
+                onCheckedChange={(v) => setAgeConfirmed(!!v)}
+                className="mt-0.5"
+              />
+              <label htmlFor="age" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                I confirm that I am <strong className="text-foreground">18 years of age or older</strong> and agree to the{" "}
                 <Link href="/terms" className="text-primary hover:underline">Terms of Use</Link>
                 {" "}and{" "}
                 <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
-              </p>
-            </form>
-          </div>
-          <p className="text-center text-sm text-muted-foreground mt-4">
+              </label>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full gap-2 shadow-lg shadow-primary/20"
+              disabled={registerMutation.isPending || !ageConfirmed}
+            >
+              {registerMutation.isPending ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Creating Account...</>
+              ) : (
+                <>Create Free Account <ArrowRight className="w-4 h-4" /></>
+              )}
+            </Button>
+          </form>
+
+          <p className="text-center text-sm text-muted-foreground mt-6">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline font-medium">Sign in</Link>
+            <Link href="/login" className="text-primary hover:underline font-medium">
+              Sign in
+            </Link>
+          </p>
+
+          <p className="text-center text-xs text-muted-foreground mt-8 leading-relaxed">
+            Fan Lite Play is completely free.<br />
+            No payments, no transactions, no hidden fees.
           </p>
         </div>
       </div>

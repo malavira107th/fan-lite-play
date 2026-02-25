@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Trophy, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Trophy, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Login() {
@@ -23,7 +23,7 @@ export default function Login() {
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Login failed. Please try again.");
+      toast.error(err.message || "Invalid email or password.");
     },
   });
 
@@ -33,29 +33,59 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-hero pitch-pattern p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+    <div className="min-h-screen flex bg-background">
+      {/* Left: image panel — hidden on mobile */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1000&q=80&auto=format&fit=crop')` }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(135deg, oklch(0.08 0.012 155 / 0.88) 0%, oklch(0.08 0.012 155 / 0.55) 100%)" }}
+        />
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
               <Trophy className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl">
-              <span className="text-gradient">Fan Lite</span>
-              <span className="text-foreground"> Play</span>
-            </span>
+            <span className="font-bold text-lg text-foreground">Fan Lite Play</span>
           </Link>
-          <h1 className="text-2xl font-bold text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Welcome Back
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">Sign in to continue your cricket journey</p>
+          <div>
+            <blockquote
+              className="text-2xl font-bold leading-snug mb-4 text-foreground"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              "Cricket is not just a sport.<br />It is a way of thinking."
+            </blockquote>
+            <p className="text-sm text-muted-foreground">Sign in to continue building your strategy.</p>
+          </div>
         </div>
+      </div>
 
-        {/* Form Card */}
-        <div className="glass-card rounded-2xl p-8">
+      {/* Right: form panel */}
+      <div className="flex-1 flex flex-col justify-center items-center px-6 py-12">
+        {/* Mobile logo */}
+        <Link href="/" className="flex items-center gap-2.5 mb-10 lg:hidden">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <Trophy className="w-4 h-4 text-primary-foreground" />
+          </div>
+          <span className="font-bold text-lg">Fan Lite Play</span>
+        </Link>
+
+        <div className="w-full max-w-sm">
+          <h1
+            className="text-2xl font-bold mb-1.5 text-foreground"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Sign In
+          </h1>
+          <p className="text-sm text-muted-foreground mb-8">
+            Welcome back. Enter your details to continue.
+          </p>
+
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
@@ -63,49 +93,60 @@ export default function Login() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 autoComplete="email"
-                className="bg-secondary/50 border-border/60 focus:border-primary"
+                required
               />
             </div>
-            <div className="space-y-2">
+
+            <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                   autoComplete="current-password"
-                  className="bg-secondary/50 border-border/60 focus:border-primary pr-10"
+                  required
+                  className="pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
+
             <Button
               type="submit"
-              className="w-full shadow-lg shadow-primary/20"
-              disabled={loginMutation.isPending}>
+              className="w-full gap-2 shadow-lg shadow-primary/20"
+              disabled={loginMutation.isPending}
+            >
               {loginMutation.isPending ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Signing In...</>
-              ) : "Sign In"}
+                <><Loader2 className="w-4 h-4 animate-spin" /> Signing In...</>
+              ) : (
+                <>Sign In <ArrowRight className="w-4 h-4" /></>
+              )}
             </Button>
           </form>
-        </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          Don't have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline font-medium">
-            Create one free
-          </Link>
-        </p>
+          <p className="text-center text-sm text-muted-foreground mt-6">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-primary hover:underline font-medium">
+              Create one free
+            </Link>
+          </p>
+
+          <p className="text-center text-xs text-muted-foreground mt-8 leading-relaxed">
+            Fan Lite Play is for users aged 18 and above.<br />
+            No financial transactions of any kind.
+          </p>
+        </div>
       </div>
     </div>
   );

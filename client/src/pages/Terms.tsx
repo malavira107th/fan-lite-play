@@ -1,89 +1,102 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FileText } from "lucide-react";
 
 const sections = [
   {
     title: "1. Acceptance of Terms",
-    content: "By accessing or using Fan Lite Play (\"the Platform\"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Platform. These terms apply to all visitors, registered users, and any other persons who access or use the Platform.",
+    content: `By accessing or using Fan Lite Play ("the Platform"), you agree to be bound by these Terms of Use. If you do not agree to these terms, you must not use the Platform. These terms apply to all users of the Platform, including registered users and visitors.`,
   },
   {
     title: "2. Eligibility",
-    content: "You must be at least 18 years of age to register for and use Fan Lite Play. By using the Platform, you represent and warrant that you meet this age requirement. Users who are found to be under 18 years of age will have their accounts terminated.",
+    content: `Fan Lite Play is intended for users who are 18 years of age or older. By registering an account or using the Platform, you confirm that you are at least 18 years old. We reserve the right to suspend or terminate any account where we have reason to believe the user does not meet this age requirement.`,
   },
   {
     title: "3. Nature of the Platform",
-    content: "Fan Lite Play is a free-to-use cricket strategy and entertainment platform. It is a game of skill in which users create virtual cricket teams based on their knowledge of the sport. The Platform does not involve any financial transactions, wagering, or the exchange of monetary value. All challenges and competitions on Fan Lite Play are entirely free to enter and participate in.",
+    content: `Fan Lite Play is a free-to-use, skill-based cricket strategy and entertainment platform. Users build virtual cricket teams from real match player pools and compete on performance-based leaderboards. The Platform does not involve any financial transactions, real-money exchange, wagering, or betting of any kind. All participation is free of charge.`,
   },
   {
     title: "4. User Accounts",
-    content: "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately at support@fanliteplay.com of any unauthorized use of your account. Fan Lite Play reserves the right to terminate accounts that violate these Terms of Use.",
+    content: `To access certain features of the Platform, you must create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. You must provide accurate and complete information when registering. You must not create accounts on behalf of other individuals or entities without authorisation.`,
   },
   {
     title: "5. Acceptable Use",
-    content: "You agree to use Fan Lite Play only for its intended purpose as a skill-based cricket strategy platform. You will not engage in any activity that is unlawful, harmful, abusive, or disruptive to other users or the Platform. You will not attempt to manipulate leaderboards, exploit technical vulnerabilities, or engage in any form of cheating.",
+    content: `You agree to use the Platform only for lawful purposes and in accordance with these Terms. You must not: use the Platform in any way that violates applicable laws or regulations; attempt to gain unauthorised access to any part of the Platform; submit false or misleading information; use automated tools to interact with the Platform without our prior written consent; or engage in any conduct that disrupts or interferes with the Platform's operation.`,
   },
   {
     title: "6. Intellectual Property",
-    content: "All content on Fan Lite Play, including but not limited to logos, graphics, user interface design, and software, is the intellectual property of Fan Lite Play and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any content on the Platform without our express written permission.",
+    content: `All content on the Platform, including but not limited to text, graphics, logos, and software, is the property of Fan Lite Play or its licensors and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any Platform content without our express written permission.`,
   },
   {
-    title: "7. Disclaimer of Warranties",
-    content: "Fan Lite Play is provided on an \"as is\" and \"as available\" basis without any warranties of any kind, either express or implied. We do not warrant that the Platform will be uninterrupted, error-free, or free of viruses or other harmful components. The Platform is provided for entertainment and educational purposes only.",
+    title: "7. Points and Leaderboards",
+    content: `Points on Fan Lite Play are calculated based on real player performance data entered by our administrative team after each match. Points have no monetary value and cannot be exchanged for any form of currency, goods, or services. Leaderboard rankings are for entertainment purposes only and do not confer any financial or material benefit.`,
   },
   {
-    title: "8. Limitation of Liability",
-    content: "To the fullest extent permitted by applicable law, Fan Lite Play and its affiliates, officers, directors, employees, and agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of or inability to use the Platform.",
+    title: "8. Disclaimer of Warranties",
+    content: `The Platform is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied. We do not warrant that the Platform will be uninterrupted, error-free, or free of viruses or other harmful components. We are not responsible for the accuracy of player performance data or points calculations, which are subject to human error.`,
   },
   {
-    title: "9. Changes to Terms",
-    content: "Fan Lite Play reserves the right to modify these Terms of Use at any time. We will notify users of significant changes by posting a notice on the Platform. Your continued use of the Platform after any changes constitutes your acceptance of the new terms.",
+    title: "9. Limitation of Liability",
+    content: `To the fullest extent permitted by applicable law, Fan Lite Play and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of, or inability to use, the Platform. Our total liability to you for any claim arising from these Terms or your use of the Platform shall not exceed zero, as the Platform is provided entirely free of charge.`,
   },
   {
-    title: "10. Governing Law",
-    content: "These Terms of Use shall be governed by and construed in accordance with the laws of India. Any disputes arising under these terms shall be subject to the exclusive jurisdiction of the courts located in New Delhi, India.",
+    title: "10. Modifications to the Platform and Terms",
+    content: `We reserve the right to modify, suspend, or discontinue the Platform at any time without notice. We may also update these Terms of Use from time to time. Continued use of the Platform after any changes constitutes your acceptance of the revised Terms. We encourage you to review these Terms periodically.`,
   },
   {
-    title: "11. Contact",
-    content: "If you have any questions about these Terms of Use, please contact us at support@fanliteplay.com or write to us at: F-73, DLF Promenade Mall, Nelson Mandela Marg, Vasant Kunj, New Delhi, Delhi – 110070, India.",
+    title: "11. Termination",
+    content: `We reserve the right to suspend or terminate your account at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties. You may also delete your account at any time by contacting us at support@fanliteplay.com.`,
+  },
+  {
+    title: "12. Governing Law",
+    content: `These Terms of Use shall be governed by and construed in accordance with the laws of India. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts located in New Delhi, India.`,
+  },
+  {
+    title: "13. Contact",
+    content: `If you have any questions about these Terms of Use, please contact us at support@fanliteplay.com or write to us at F-73, DLF Promenade Mall, Nelson Mandela Marg, Vasant Kunj, New Delhi, Delhi – 110070, India.`,
   },
 ];
 
 export default function Terms() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1 pt-24">
-        <section className="py-16 gradient-hero border-b border-border/60">
-          <div className="container max-w-3xl text-center">
-            <div className="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-5">
-              <FileText className="w-7 h-7 text-primary" />
-            </div>
-            <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Terms of <span className="text-gradient">Use</span>
-            </h1>
-            <p className="text-muted-foreground">Last updated: February 2025</p>
-          </div>
-        </section>
 
-        <section className="py-16">
-          <div className="container max-w-3xl">
-            <div className="glass-card rounded-xl p-8 mb-6">
-              <p className="text-muted-foreground leading-relaxed">
-                Please read these Terms of Use carefully before using Fan Lite Play. These terms govern your access to and use of our cricket strategy platform. Fan Lite Play is a free-to-play entertainment platform and does not involve any financial transactions of any kind.
-              </p>
-            </div>
-            <div className="space-y-6">
-              {sections.map((s, i) => (
-                <div key={i} className="glass-card rounded-xl p-6">
-                  <h2 className="font-semibold text-foreground mb-3">{s.title}</h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{s.content}</p>
-                </div>
-              ))}
-            </div>
+      {/* Header */}
+      <section className="pt-32 pb-10 border-b border-border/40">
+        <div className="container max-w-3xl mx-auto">
+          <div className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">Legal</div>
+          <h1 className="text-4xl font-bold mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Terms of Use
+          </h1>
+          <p className="text-sm text-muted-foreground">Last updated: February 2025</p>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="pt-10 pb-0">
+        <div className="container max-w-3xl mx-auto">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 mb-10">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Please read these Terms of Use carefully before using Fan Lite Play. Fan Lite Play is a free-to-use entertainment platform and does not involve any financial transactions of any kind. These terms govern your access to and use of the platform.
+            </p>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+
+      {/* Sections */}
+      <section className="pb-20">
+        <div className="container max-w-3xl mx-auto">
+          <div className="space-y-0">
+            {sections.map((section, i) => (
+              <div key={section.title} className={`py-8 ${i < sections.length - 1 ? "border-b border-border/30" : ""}`}>
+                <h2 className="text-base font-semibold text-foreground mb-3">{section.title}</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">{section.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

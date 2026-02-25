@@ -6,7 +6,7 @@
     { "source": "/(.*)", "destination": "/api/server" }
   ],
   "functions": {
-    "api/server.mts": {
+    "api/server.js": {
       "maxDuration": 30
     }
   },

@@ -94,3 +94,10 @@
 - [x] Add code splitting to reduce 1.18 MB JS bundle
 - [x] Create VERCEL_SETUP.md documenting all required environment variables
 - [x] Update GitHub with all Vercel-ready changes
+
+## Google Search Console / SEO Indexing
+- [ ] Create sitemap.xml with all public pages
+- [ ] Create robots.txt allowing all crawlers
+- [ ] Add comprehensive SEO meta tags (title, description, canonical, OG, Twitter) to index.html
+- [ ] Add JSON-LD structured data (Organization schema) to homepage
+- [ ] Push to GitHub and redeploy on Vercel

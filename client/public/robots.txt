@@ -1,0 +1,17 @@
+# Fan Lite Play — robots.txt
+# https://fan-lite-play.vercel.app
+
+User-agent: *
+Allow: /
+
+# Block authenticated/private routes from indexing
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /challenges
+Disallow: /leaderboard
+Disallow: /team-builder
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://fan-lite-play.vercel.app/sitemap.xml

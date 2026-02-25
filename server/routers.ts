@@ -10,6 +10,7 @@ import {
   teamEntryPlayers,
   users,
 } from "../drizzle/schema";
+import axios from "axios";
 import { COOKIE_NAME, ONE_YEAR_MS } from "../shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { sdk } from "./_core/sdk";
@@ -66,6 +67,27 @@ function calculatePoints(perf: {
 
 // ─── App Router ───────────────────────────────────────────────────────────────
 export const appRouter = router({
+  // ── reCAPTCHA Verification ────────────────────────────────────────────────
+  verifyCaptcha: publicProcedure
+    .input(z.object({ token: z.string().min(1) }))
+    .mutation(async ({ input }) => {
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6LcgincsAAAAAVyljRGakK1d31_Pr9pHCDj-BKq";
+      try {
+        const response = await axios.post(
+          `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${input.token}`,
+          {},
+          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        );
+        const data = response.data as { success: boolean; score: number; action: string };
+        return {
+          success: data.success,
+          score: data.score ?? 0,
+        };
+      } catch {
+        return { success: false, score: 0 };
+      }
+    }),
+
   // ── Auth ──────────────────────────────────────────────────────────────────
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

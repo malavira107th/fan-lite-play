@@ -102,3 +102,10 @@
 - [x] Add JSON-LD structured data (Organization schema) to homepage
 - [x] Push to GitHub and redeploy on Vercel
 - [x] Update all SEO URLs from vercel.app to https://www.fanliteplay.com (sitemap, robots.txt, index.html, meta tags, JSON-LD)
+
+## 2-Step Security Gate
+- [x] Build SecurityGate component (Step 1: reCAPTCHA v3, Step 2: Age Verification, interlinked)
+- [x] Add mobile-only image reveal after both steps pass (removed per user request)
+- [x] Add reCAPTCHA secret key to server env and create tRPC verifyCaptcha endpoint
+- [x] Wire SecurityGate into App.tsx (mandatory for all visitors)
+- [x] Push to GitHub and redeploy on Vercel

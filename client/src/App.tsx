@@ -26,6 +26,9 @@ import TeamBuilder from "./pages/TeamBuilder";
 import Leaderboard from "./pages/Leaderboard";
 import Profile from "./pages/Profile";
 
+// Security Gate
+import SecurityGate from "./components/SecurityGate";
+
 // Admin pages
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -77,7 +80,9 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster richColors position="top-right" />
-          <Router />
+          <SecurityGate>
+            <Router />
+          </SecurityGate>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

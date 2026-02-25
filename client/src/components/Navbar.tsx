@@ -13,7 +13,6 @@ import {
 
 // Always visible to everyone
 const publicNavLinks = [
-  { href: "/leaderboard", label: "Leaderboard" },
   { href: "/how-it-works", label: "How It Works" },
   { href: "/about", label: "About" },
 ];
@@ -21,6 +20,7 @@ const publicNavLinks = [
 // Only visible to logged-in users
 const authNavLinks = [
   { href: "/challenges", label: "Challenges" },
+  { href: "/leaderboard", label: "Leaderboard" },
   { href: "/dashboard", label: "My Dashboard" },
 ];
 

@@ -42,9 +42,9 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Platform</h4>
             <ul className="space-y-2">
               {[
-                { href: "/leaderboard", label: "Leaderboard", auth: false },
                 { href: "/how-it-works", label: "How It Works", auth: false },
                 { href: "/challenges", label: "Challenges", auth: true },
+                { href: "/leaderboard", label: "Leaderboard", auth: true },
                 { href: "/dashboard", label: "My Dashboard", auth: true },
               ]
                 .filter(l => !l.auth || !!user)

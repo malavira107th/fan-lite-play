@@ -43,42 +43,45 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --radius: 0.625rem;
+  /* Elegant dark cricket theme */
+  --background: oklch(0.10 0.015 155);
+  --foreground: oklch(0.95 0.005 90);
+  --card: oklch(0.13 0.018 155);
+  --card-foreground: oklch(0.95 0.005 90);
+  --popover: oklch(0.13 0.018 155);
+  --popover-foreground: oklch(0.95 0.005 90);
+  --primary: oklch(0.72 0.18 145);
+  --primary-foreground: oklch(0.10 0.015 155);
+  --secondary: oklch(0.18 0.022 155);
+  --secondary-foreground: oklch(0.90 0.008 90);
+  --muted: oklch(0.16 0.018 155);
+  --muted-foreground: oklch(0.62 0.015 90);
+  --accent: oklch(0.72 0.18 145);
+  --accent-foreground: oklch(0.10 0.015 155);
+  --destructive: oklch(0.60 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.22 0.022 155);
+  --input: oklch(0.18 0.022 155);
+  --ring: oklch(0.72 0.18 145);
+  --chart-1: oklch(0.72 0.18 145);
+  --chart-2: oklch(0.65 0.15 200);
+  --chart-3: oklch(0.75 0.15 60);
+  --chart-4: oklch(0.60 0.20 300);
+  --chart-5: oklch(0.65 0.20 25);
+  --sidebar: oklch(0.12 0.018 155);
+  --sidebar-foreground: oklch(0.90 0.008 90);
+  --sidebar-primary: oklch(0.72 0.18 145);
+  --sidebar-primary-foreground: oklch(0.10 0.015 155);
+  --sidebar-accent: oklch(0.18 0.022 155);
+  --sidebar-accent-foreground: oklch(0.90 0.008 90);
+  --sidebar-border: oklch(0.22 0.022 155);
+  --sidebar-ring: oklch(0.72 0.18 145);
+  --gold: oklch(0.78 0.16 85);
+  --gold-muted: oklch(0.65 0.12 85);
 }
 
-.dark {
+.dark-unused {
   --primary: var(--color-blue-700);
   --primary-foreground: var(--color-blue-50);
   --sidebar-primary: var(--color-blue-500);
@@ -119,6 +122,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -130,6 +134,44 @@
   input[type="checkbox"]:not(:disabled),
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
+  }
+}
+
+@layer utilities {
+  .text-gold { color: var(--gold); }
+  .bg-gold { background-color: var(--gold); }
+  .border-gold { border-color: var(--gold); }
+  .gradient-hero {
+    background: radial-gradient(ellipse at 60% 0%, oklch(0.20 0.08 145 / 0.5) 0%, transparent 60%),
+                radial-gradient(ellipse at 0% 80%, oklch(0.15 0.06 145 / 0.3) 0%, transparent 50%),
+                var(--background);
+  }
+  .glass-card {
+    background: oklch(0.14 0.018 155 / 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid oklch(0.25 0.025 155);
+  }
+  .text-gradient {
+    background: linear-gradient(135deg, oklch(0.72 0.18 145), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .pitch-pattern {
+    background-image: repeating-linear-gradient(
+      90deg,
+      oklch(0.72 0.18 145 / 0.03) 0px,
+      oklch(0.72 0.18 145 / 0.03) 1px,
+      transparent 1px,
+      transparent 60px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      oklch(0.72 0.18 145 / 0.03) 0px,
+      oklch(0.72 0.18 145 / 0.03) 1px,
+      transparent 1px,
+      transparent 60px
+    );
   }
 }
 

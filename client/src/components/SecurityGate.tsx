@@ -3,8 +3,7 @@ import { Shield, CheckCircle, AlertCircle, Loader2, Calendar } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import SliderCaptcha from "./SliderCaptcha";
 
-const GATE_STORAGE_KEY = "flp_gate_passed";
-const GATE_EXPIRY_HOURS = 24;
+
 
 interface SecurityGateProps {
   children: React.ReactNode;
@@ -12,30 +11,10 @@ interface SecurityGateProps {
 
 type Step = "captcha" | "age" | "passed";
 
-function isGateAlreadyPassed(): boolean {
-  try {
-    const stored = localStorage.getItem(GATE_STORAGE_KEY);
-    if (!stored) return false;
-    const { timestamp } = JSON.parse(stored);
-    const expiryMs = GATE_EXPIRY_HOURS * 60 * 60 * 1000;
-    return Date.now() - timestamp < expiryMs;
-  } catch {
-    return false;
-  }
-}
 
-function markGatePassed(): void {
-  try {
-    localStorage.setItem(GATE_STORAGE_KEY, JSON.stringify({ timestamp: Date.now() }));
-  } catch {
-    // ignore storage errors
-  }
-}
 
 export default function SecurityGate({ children }: SecurityGateProps) {
-  const [step, setStep] = useState<Step>(() =>
-    isGateAlreadyPassed() ? "passed" : "captcha"
-  );
+  const [step, setStep] = useState<Step>("captcha");
   const [captchaPassed, setCaptchaPassed] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [ageError, setAgeError] = useState<string | null>(null);
@@ -54,7 +33,6 @@ export default function SecurityGate({ children }: SecurityGateProps) {
     setAgeLoading(true);
     setAgeError(null);
     await new Promise(r => setTimeout(r, 600));
-    markGatePassed();
     setStep("passed");
     setAgeLoading(false);
   };

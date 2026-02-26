@@ -133,4 +133,7 @@
 - [x] Build SliderCaptcha component (drag-to-verify, no external dependencies)
 - [x] Update SecurityGate Step 1 to use SliderCaptcha instead of reCAPTCHA
 - [x] Remove all reCAPTCHA script loading, keys, and backend verify-captcha endpoint
-- [ ] Push to GitHub and redeploy on Vercel
+- [x] Push to GitHub and redeploy on Vercel
+
+## Captcha Every Visit
+- [x] Remove localStorage gate cache — captcha shows on every page visit

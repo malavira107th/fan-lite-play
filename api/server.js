@@ -891,32 +891,12 @@ async function createContext(opts) {
 }
 
 // server/_core/app.ts
-import axios2 from "axios";
 function createApp() {
   const app = express();
   const server = createServer(app);
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerOAuthRoutes(app);
-  app.post("/api/verify-captcha", async (req, res) => {
-    const { token } = req.body;
-    if (!token) {
-      res.json({ success: false, score: 0, error: "No token provided" });
-      return;
-    }
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6LdzZ3gsAAAAHn8cY0igXlN8JuylaTncMp6od90";
-    try {
-      const response = await axios2.post(
-        `https://www.google.com/recaptcha/api/siteverify`,
-        new URLSearchParams({ secret: secretKey, response: token }).toString(),
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-      );
-      const data = response.data;
-      res.json({ success: data.success, score: data.score ?? 0, errorCodes: data["error-codes"] });
-    } catch (err) {
-      res.json({ success: true, score: 0.5, fallback: true });
-    }
-  });
   app.use(
     "/api/trpc",
     createExpressMiddleware({

@@ -128,3 +128,9 @@
 - [x] Update backend /api/verify-captcha to use Enterprise Assessment API (recaptchaenterprise.googleapis.com)
 - [x] Add graceful fallback in backend if Enterprise API key is not configured
 - [x] User created new standard reCAPTCHA v3 key — updated site key and secret key, reverted from Enterprise to standard api.js + siteverify
+
+## Custom Slider Captcha (replaces Google reCAPTCHA)
+- [x] Build SliderCaptcha component (drag-to-verify, no external dependencies)
+- [x] Update SecurityGate Step 1 to use SliderCaptcha instead of reCAPTCHA
+- [x] Remove all reCAPTCHA script loading, keys, and backend verify-captcha endpoint
+- [ ] Push to GitHub and redeploy on Vercel

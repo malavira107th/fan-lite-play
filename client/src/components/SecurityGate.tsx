@@ -1,20 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState } from "react";
 import { Shield, CheckCircle, AlertCircle, Loader2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SliderCaptcha from "./SliderCaptcha";
 
-const RECAPTCHA_SITE_KEY = "6LdzZ3gsAAAANanqPlufZHE_XsKq75uMu4OOKGB";
 const GATE_STORAGE_KEY = "flp_gate_passed";
 const GATE_EXPIRY_HOURS = 24;
-
-declare global {
-  interface Window {
-    grecaptcha: {
-      ready: (cb: () => void) => void;
-      execute: (siteKey: string, options: { action: string }) => Promise<string>;
-    };
-    onRecaptchaLoad?: () => void;
-  }
-}
 
 interface SecurityGateProps {
   children: React.ReactNode;
@@ -42,91 +32,19 @@ function markGatePassed(): void {
   }
 }
 
-// Load reCAPTCHA v3 script once and return a promise that resolves when ready
-let recaptchaReadyPromise: Promise<void> | null = null;
-
-function loadRecaptcha(): Promise<void> {
-  if (recaptchaReadyPromise) return recaptchaReadyPromise;
-
-  recaptchaReadyPromise = new Promise<void>((resolve, reject) => {
-    // If already loaded and ready
-    if (window.grecaptcha?.ready) {
-      window.grecaptcha.ready(resolve);
-      return;
-    }
-
-    const timeout = setTimeout(() => reject(new Error("reCAPTCHA load timeout")), 15000);
-
-    // Remove any existing reCAPTCHA script to avoid conflicts
-    const existing = document.querySelector(`script[src*="recaptcha"]`);
-    if (existing) existing.remove();
-
-    // Use onload callback for reliable initialization
-    window.onRecaptchaLoad = () => {
-      clearTimeout(timeout);
-      window.grecaptcha.ready(resolve);
-    };
-
-    const script = document.createElement("script");
-    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}&onload=onRecaptchaLoad`;
-    script.async = true;
-    script.onerror = () => {
-      clearTimeout(timeout);
-      reject(new Error("reCAPTCHA script failed to load"));
-    };
-    document.head.appendChild(script);
-  });
-
-  return recaptchaReadyPromise;
-}
-
 export default function SecurityGate({ children }: SecurityGateProps) {
   const [step, setStep] = useState<Step>(() =>
     isGateAlreadyPassed() ? "passed" : "captcha"
   );
-  const [captchaLoading, setCaptchaLoading] = useState(false);
-  const [captchaError, setCaptchaError] = useState<string | null>(null);
   const [captchaPassed, setCaptchaPassed] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [ageError, setAgeError] = useState<string | null>(null);
   const [ageLoading, setAgeLoading] = useState(false);
-  const hasRun = useRef(false);
 
-  const runCaptcha = useCallback(async () => {
-    if (hasRun.current) return;
-    hasRun.current = true;
-    setCaptchaLoading(true);
-    setCaptchaError(null);
-    try {
-      await loadRecaptcha();
-      const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
-      if (!token) throw new Error("No token received from reCAPTCHA");
-      // Token received — Google confirmed the user is human
-      setCaptchaPassed(true);
-      setTimeout(() => setStep("age"), 800);
-    } catch (err) {
-      hasRun.current = false; // allow retry
-      const msg = err instanceof Error ? err.message : "Unknown error";
-      setCaptchaError(`Verification failed: ${msg}. Please try again.`);
-    } finally {
-      setCaptchaLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (step === "captcha") {
-      const timer = setTimeout(runCaptcha, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [step, runCaptcha]);
-
-  const handleRetry = useCallback(() => {
-    hasRun.current = false;
-    recaptchaReadyPromise = null; // reset so script reloads
-    setCaptchaError(null);
-    setCaptchaLoading(false);
-    runCaptcha();
-  }, [runCaptcha]);
+  const handleSliderVerified = () => {
+    setCaptchaPassed(true);
+    setTimeout(() => setStep("age"), 700);
+  };
 
   const handleAgeConfirm = async () => {
     if (!ageConfirmed) {
@@ -206,43 +124,32 @@ export default function SecurityGate({ children }: SecurityGateProps) {
         {/* Card */}
         <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
 
-          {/* ── STEP 1: reCAPTCHA ── */}
+          {/* ── STEP 1: Custom Slider Captcha ── */}
           {step === "captcha" && (
-            <div className="text-center space-y-6">
-              <div className="flex justify-center">
-                <div
-                  className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    captchaLoading
-                      ? "bg-green-900/40"
-                      : captchaError
-                      ? "bg-red-900/40"
-                      : "bg-green-900/40"
-                  }`}
-                >
-                  {captchaLoading ? (
-                    <Loader2 className="w-8 h-8 text-green-400 animate-spin" />
-                  ) : captchaError ? (
-                    <AlertCircle className="w-8 h-8 text-red-400" />
-                  ) : captchaPassed ? (
-                    <CheckCircle className="w-8 h-8 text-green-400" />
-                  ) : (
-                    <Shield className="w-8 h-8 text-green-400" />
-                  )}
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-green-900/40 flex items-center justify-center">
+                    {captchaPassed ? (
+                      <CheckCircle className="w-8 h-8 text-green-400" />
+                    ) : (
+                      <Shield className="w-8 h-8 text-green-400" />
+                    )}
+                  </div>
                 </div>
-              </div>
-
-              <div>
                 <h2 className="text-xl font-bold text-white mb-2">Security Verification</h2>
                 <p className="text-zinc-400 text-sm leading-relaxed">
-                  {captchaLoading
-                    ? "Running automated security checks in the background..."
-                    : captchaPassed
+                  {captchaPassed
                     ? "Security check passed. Moving to age verification..."
-                    : captchaError
-                    ? captchaError
-                    : "Verifying your connection. This happens automatically."}
+                    : "Slide the button all the way to the right to verify you're human."}
                 </p>
               </div>
+
+              {!captchaPassed && (
+                <div className="flex justify-center">
+                  <SliderCaptcha onVerified={handleSliderVerified} />
+                </div>
+              )}
 
               {captchaPassed && (
                 <div className="flex items-center justify-center gap-2 text-green-400 text-sm font-medium">
@@ -250,38 +157,6 @@ export default function SecurityGate({ children }: SecurityGateProps) {
                   <span>Verification successful</span>
                 </div>
               )}
-
-              {captchaError && (
-                <Button
-                  onClick={handleRetry}
-                  disabled={captchaLoading}
-                  className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold"
-                >
-                  {captchaLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Try Again
-                </Button>
-              )}
-
-              <p className="text-xs text-zinc-600">
-                Protected by Google reCAPTCHA.{" "}
-                <a
-                  href="https://policies.google.com/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-zinc-400"
-                >
-                  Privacy
-                </a>{" "}
-                &amp;{" "}
-                <a
-                  href="https://policies.google.com/terms"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-zinc-400"
-                >
-                  Terms
-                </a>
-              </p>
             </div>
           )}
 

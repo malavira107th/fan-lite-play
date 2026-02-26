@@ -174,30 +174,41 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
     chunkSizeWarningLimit: 600,
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Core React runtime
-          "vendor-react": ["react", "react-dom"],
+        manualChunks(id) {
+          // Core React runtime — always needed
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+            return 'vendor-react';
+          }
           // Routing
-          "vendor-router": ["wouter"],
-          // tRPC + React Query
-          "vendor-trpc": ["@trpc/client", "@trpc/react-query", "@tanstack/react-query"],
-          // Radix UI components
-          "vendor-radix": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-select",
-            "@radix-ui/react-tabs",
-            "@radix-ui/react-tooltip",
-            "@radix-ui/react-popover",
-          ],
-          // Charts
-          "vendor-charts": ["recharts"],
-          // Animations
-          "vendor-motion": ["framer-motion"],
-          // Icons
-          "vendor-icons": ["lucide-react"],
+          if (id.includes('node_modules/wouter')) {
+            return 'vendor-router';
+          }
+          // tRPC + React Query — needed for data fetching
+          if (id.includes('@trpc/') || id.includes('@tanstack/react-query')) {
+            return 'vendor-trpc';
+          }
+          // Radix UI — needed for UI interactions
+          if (id.includes('@radix-ui/')) {
+            return 'vendor-radix';
+          }
+          // Icons — medium priority
+          if (id.includes('lucide-react')) {
+            return 'vendor-icons';
+          }
+          // Heavy libs — defer until needed
+          if (id.includes('framer-motion')) {
+            return 'vendor-motion';
+          }
+          if (id.includes('recharts') || id.includes('d3-') || id.includes('victory-')) {
+            return 'vendor-charts';
+          }
+          // Superjson + other utilities
+          if (id.includes('superjson') || id.includes('zod')) {
+            return 'vendor-utils';
+          }
         },
       },
     },

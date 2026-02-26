@@ -7,7 +7,6 @@ import {
   ArrowRight, ChevronRight, CheckCircle2, Star,
   UserPlus, Search, Layers, Eye, TrendingUp
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 /* ─── Feature cards ─── */
 const features = [
@@ -109,11 +108,7 @@ export default function Home() {
         {/* Content */}
         <div className="container relative z-10 flex items-center" style={{ minHeight: "100vh", paddingTop: "6rem", paddingBottom: "4rem" }}>
           <div className="max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-            >
+            <div className="animate-fade-in-up">
               {/* Label */}
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-semibold mb-7 tracking-wide">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
@@ -166,7 +161,7 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -228,20 +223,17 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
-              <motion.div
+              <div
                 key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="rounded-2xl border border-border/60 bg-card/60 p-6 hover:border-primary/30 hover:bg-card transition-all duration-300 group"
+                className="rounded-2xl border border-border/60 bg-card/60 p-6 hover:border-primary/30 hover:bg-card transition-all duration-300 group animate-fade-in-up"
+                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
                   <f.icon className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">{f.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -266,13 +258,10 @@ export default function Home() {
             {/* Steps */}
             <div className="space-y-6">
               {steps.map((step, i) => (
-                <motion.div
+                <div
                   key={step.number}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="flex gap-5 items-start"
+                  className="flex gap-5 items-start animate-fade-in-up"
+                  style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <div className="flex flex-col items-center shrink-0">
                     <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center">
@@ -287,7 +276,7 @@ export default function Home() {
                     <h3 className="font-semibold text-foreground mb-1">{step.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 

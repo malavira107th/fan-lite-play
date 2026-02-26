@@ -143,3 +143,10 @@
 - [x] Fix font loading: switched to non-blocking preload + noscript fallback
 - [x] Preload /logo.webp in <head> for faster LCP
 - [x] Lazy-load all non-critical routes (About, Login, Dashboard, Admin, etc.) to reduce initial JS bundle
+
+## PageSpeed Round 2 Fixes
+- [x] Remove maximum-scale=1 from viewport meta tag (Best Practices fix)
+- [x] Removed unused recharts + chart.tsx (saves ~37 KB)
+- [x] Replaced framer-motion with CSS @keyframes animations (saves ~114 KB)
+- [x] Main JS bundle: 540 KB → 164 KB (70% smaller)
+- [x] Further split vendor bundles with function-based manualChunks + cssCodeSplit

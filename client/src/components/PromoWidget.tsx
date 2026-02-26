@@ -81,7 +81,7 @@ export function PromoWidget({ onVisibilityChange }: PromoWidgetProps) {
       <img
         src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/pGTQPXwVtQwnTYvv.webp"
         alt="Special Offer"
-        style={{ width: '100%', height: '120px', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+        style={{ width: '100%', height: '120px', objectFit: 'cover', objectPosition: 'center bottom', display: 'block' }}
         loading="lazy"
         decoding="async"
         draggable={false}

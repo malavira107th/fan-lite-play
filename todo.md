@@ -150,3 +150,8 @@
 - [x] Replaced framer-motion with CSS @keyframes animations (saves ~114 KB)
 - [x] Main JS bundle: 540 KB → 164 KB (70% smaller)
 - [x] Further split vendor bundles with function-based manualChunks + cssCodeSplit
+
+## PageSpeed Round 3 Fixes (Best Practices 100 + Performance 90+)
+- [x] Fix analytics script 400 error: guard VITE_ANALYTICS_ENDPOINT so script only loads when env var is set
+- [x] Self-host Inter font: downloaded inter-latin-wght-normal.woff2 (46 KB), added @font-face in index.css
+- [x] Removed Google Fonts Inter dependency from index.html; kept only Playfair Display (headings only, non-blocking)

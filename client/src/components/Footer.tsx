@@ -49,11 +49,11 @@ export default function Footer() {
           {/* Brand column — wider */}
           <div className="lg:col-span-4">
             <Link href="/" className="inline-flex items-center mb-5 group">
-              <img
+              <picture><source srcSet="/logo.webp" type="image/webp" /><img
                 src="/logo.png"
                 alt="Fan Lite Play"
                 className="w-auto object-contain" style={{height: '56px'}}
-              />
+              width="201" height="112" /></picture>
             </Link>
 
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">

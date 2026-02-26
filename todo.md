@@ -137,3 +137,9 @@
 
 ## Captcha Every Visit
 - [x] Remove localStorage gate cache — captcha shows on every page visit
+
+## Performance Optimizations (PageSpeed 83 → 90+)
+- [x] Convert logo.png to WebP (28.9 KB → 5.8 KB, 80% smaller) and add explicit width/height attributes
+- [x] Fix font loading: switched to non-blocking preload + noscript fallback
+- [x] Preload /logo.webp in <head> for faster LCP
+- [x] Lazy-load all non-critical routes (About, Login, Dashboard, Admin, etc.) to reduce initial JS bundle

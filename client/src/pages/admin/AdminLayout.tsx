@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         {/* Logo */}
         <div className="p-4 border-b border-border/60">
           <Link href="/" className="flex items-center mb-1">
-            <img src="/logo.png" alt="Fan Lite Play" style={{height: '40px'}} className="w-auto object-contain" />
+            <picture><source srcSet="/logo.webp" type="image/webp" /><img src="/logo.png" alt="Fan Lite Play" style={{height: '40px'}} className="w-auto object-contain" width="201" height="112" /></picture>
           </Link>
           <div className="text-xs text-muted-foreground pl-1">Admin Panel</div>
         </div>

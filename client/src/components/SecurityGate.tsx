@@ -55,7 +55,10 @@ export default function SecurityGate({ children }: SecurityGateProps) {
       <div className="relative w-full max-w-md mx-4">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <img src="/logo.png" alt="Fan Lite Play" className="h-16 w-auto object-contain" />
+          <picture>
+            <source srcSet="/logo.webp" type="image/webp" />
+            <img src="/logo.png" alt="Fan Lite Play" width="201" height="112" className="h-16 w-auto object-contain" />
+          </picture>
         </div>
 
         {/* Progress indicator */}

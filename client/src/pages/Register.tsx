@@ -54,7 +54,7 @@ export default function Register() {
         />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <Link href="/" className="flex items-center">
-            <img src="/logo.png" alt="Fan Lite Play" style={{height: '48px'}} className="w-auto object-contain" />
+            <picture><source srcSet="/logo.webp" type="image/webp" /><img src="/logo.png" alt="Fan Lite Play" style={{height: '48px'}} className="w-auto object-contain" width="201" height="112" /></picture>
           </Link>
           <div>
             <blockquote
@@ -72,7 +72,7 @@ export default function Register() {
       <div className="flex-1 flex flex-col justify-center items-center px-6 py-12">
         {/* Mobile logo */}
         <Link href="/" className="flex items-center mb-10 lg:hidden">
-          <img src="/logo.png" alt="Fan Lite Play" style={{height: '44px'}} className="w-auto object-contain" />
+          <picture><source srcSet="/logo.webp" type="image/webp" /><img src="/logo.png" alt="Fan Lite Play" style={{height: '44px'}} className="w-auto object-contain" width="201" height="112" /></picture>
         </Link>
 
         <div className="w-full max-w-sm">

@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { PROMO_WIDGET_ENABLED } from "@/components/PromoWidget";
 import {
   Brain, Target, BarChart3, Trophy, Users, Shield,
   ArrowRight, ChevronRight, CheckCircle2, Star,
@@ -87,6 +88,8 @@ const whyPoints = [
 ];
 
 export default function Home() {
+  // Ensure PromoWidget is not tree-shaken
+  if (PROMO_WIDGET_ENABLED) { /* silent check */ }
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />

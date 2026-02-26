@@ -21,11 +21,20 @@
       ]
     },
     {
-      "source": "/(logo\\.png|favicon\\.png)",
+      "source": "/fonts/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=86400"
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(logo\\.webp|logo\\.png|favicon\\.png|promo-banner\\.webp)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }

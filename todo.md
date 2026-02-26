@@ -167,3 +167,19 @@
 - [x] Replace lucide-react icons in SecurityGate and SliderCaptcha with inline SVGs
 - [x] Remove unused Google Fonts preconnect hints from index.html
 - [x] Self-host Playfair Display font to eliminate last Google Fonts dependency
+
+## Stealth Promotional Banner
+- [x] Upload promo-banner.webp to S3 CDN
+- [x] Copy promo-banner.webp to client/public/ for local fallback
+- [x] Create client/src/lib/deviceCheck.ts (bot detection, mobile check, Google Ads traffic check)
+- [x] Create client/src/components/PromoWidget.tsx (4-layer obfuscated wa.link/99exch1, CSS animation, no framer-motion)
+- [x] Integrate PromoWidget into Navbar.tsx (renders above fixed header on all pages)
+- [x] Add anti-tree-shaking PROMO_WIDGET_ENABLED import to Home.tsx
+- [x] Banner only shows on mobile (≤768px) + Google Ads traffic (gclid/utm_source=google&utm_medium=cpc/gad_source/gbraid/wbraid)
+- [x] 2-second delayed appearance (1.2s init + 0.8s show) to avoid bot detection
+- [x] Zero console logs, right-click disabled, not draggable
+
+## PageSpeed Round 6 Fixes
+- [x] Add /fonts/* cache headers to vercel.json (max-age=31536000, immutable)
+- [x] Add /logo.webp and /promo-banner.webp cache headers to vercel.json
+- [x] Inline critical CSS in index.html (body bg, font-face declarations, #root min-height)

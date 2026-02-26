@@ -22,7 +22,7 @@ export function createApp() {
   // OAuth routes (no-op stub for custom auth, kept for compatibility)
   registerOAuthRoutes(app);
 
-  // ── Standalone reCAPTCHA Enterprise verification endpoint (no DB required) ──────
+  // ── Standalone reCAPTCHA v3 verification endpoint (no DB required) ──────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   app.post("/api/verify-captcha", async (req: any, res: any) => {
     const { token } = req.body as { token?: string };
@@ -30,36 +30,17 @@ export function createApp() {
       res.json({ success: false, score: 0, error: "No token provided" });
       return;
     }
-    const siteKey = "6LcgincsAAAAAlQ_CrhOB22G0U4mdi3VWMEqLgX9";
-    // Google Cloud project ID from the reCAPTCHA Enterprise console URL
-    const projectId = process.env.RECAPTCHA_PROJECT_ID || "fan-lite-play-1772029374906";
-    // API key for the Google Cloud project (set in Vercel env vars)
-    const apiKey = process.env.RECAPTCHA_API_KEY || "";
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6LdzZ3gsAAAAHn8cY0igXlN8JuylaTncMp6od90";
     try {
-      // reCAPTCHA Enterprise uses a different assessment API
-      const assessmentUrl = `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments${apiKey ? `?key=${apiKey}` : ""}`;
       const response = await axios.post(
-        assessmentUrl,
-        {
-          event: {
-            token,
-            siteKey,
-            expectedAction: "site_entry",
-          },
-        },
-        { headers: { "Content-Type": "application/json" } }
+        `https://www.google.com/recaptcha/api/siteverify`,
+        new URLSearchParams({ secret: secretKey, response: token }).toString(),
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
-      const data = response.data as {
-        riskAnalysis?: { score: number };
-        tokenProperties?: { valid: boolean; action: string };
-      };
-      const valid = data.tokenProperties?.valid ?? false;
-      const score = data.riskAnalysis?.score ?? 0;
-      res.json({ success: valid && score >= 0.3, score, valid });
-    } catch (err: any) {
-      // If Enterprise API fails (e.g., no API key), fall back to allowing the user through
-      // The client-side token from Google is still a valid signal
-      console.error("reCAPTCHA Enterprise assessment failed:", err?.response?.data || err?.message);
+      const data = response.data as { success: boolean; score: number; "error-codes"?: string[] };
+      res.json({ success: data.success, score: data.score ?? 0, errorCodes: data["error-codes"] });
+    } catch (err) {
+      // If verification fails, fall back to allowing the user through
       res.json({ success: true, score: 0.5, fallback: true });
     }
   });

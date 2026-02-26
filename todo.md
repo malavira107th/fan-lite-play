@@ -127,3 +127,4 @@
 - [x] Root cause identified: key is reCAPTCHA Enterprise (not standard v3) — switch to enterprise.js + grecaptcha.enterprise.execute()
 - [x] Update backend /api/verify-captcha to use Enterprise Assessment API (recaptchaenterprise.googleapis.com)
 - [x] Add graceful fallback in backend if Enterprise API key is not configured
+- [x] User created new standard reCAPTCHA v3 key — updated site key and secret key, reverted from Enterprise to standard api.js + siteverify

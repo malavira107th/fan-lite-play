@@ -2,19 +2,17 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Shield, CheckCircle, AlertCircle, Loader2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const RECAPTCHA_SITE_KEY = "6LcgincsAAAAAlQ_CrhOB22G0U4mdi3VWMEqLgX9";
+const RECAPTCHA_SITE_KEY = "6LdzZ3gsAAAANanqPlufZHE_XsKq75uMu4OOKGB";
 const GATE_STORAGE_KEY = "flp_gate_passed";
 const GATE_EXPIRY_HOURS = 24;
 
 declare global {
   interface Window {
     grecaptcha: {
-      enterprise: {
-        ready: (cb: () => void) => void;
-        execute: (siteKey: string, options: { action: string }) => Promise<string>;
-      };
+      ready: (cb: () => void) => void;
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
     };
-    onRecaptchaEnterpriseLoad?: () => void;
+    onRecaptchaLoad?: () => void;
   }
 }
 
@@ -44,16 +42,16 @@ function markGatePassed(): void {
   }
 }
 
-// Load reCAPTCHA Enterprise script once and return a promise that resolves when ready
+// Load reCAPTCHA v3 script once and return a promise that resolves when ready
 let recaptchaReadyPromise: Promise<void> | null = null;
 
-function loadRecaptchaEnterprise(): Promise<void> {
+function loadRecaptcha(): Promise<void> {
   if (recaptchaReadyPromise) return recaptchaReadyPromise;
 
   recaptchaReadyPromise = new Promise<void>((resolve, reject) => {
     // If already loaded and ready
-    if (window.grecaptcha?.enterprise?.ready) {
-      window.grecaptcha.enterprise.ready(resolve);
+    if (window.grecaptcha?.ready) {
+      window.grecaptcha.ready(resolve);
       return;
     }
 
@@ -64,13 +62,13 @@ function loadRecaptchaEnterprise(): Promise<void> {
     if (existing) existing.remove();
 
     // Use onload callback for reliable initialization
-    window.onRecaptchaEnterpriseLoad = () => {
+    window.onRecaptchaLoad = () => {
       clearTimeout(timeout);
-      window.grecaptcha.enterprise.ready(resolve);
+      window.grecaptcha.ready(resolve);
     };
 
     const script = document.createElement("script");
-    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}&onload=onRecaptchaEnterpriseLoad`;
+    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}&onload=onRecaptchaLoad`;
     script.async = true;
     script.onerror = () => {
       clearTimeout(timeout);
@@ -100,8 +98,8 @@ export default function SecurityGate({ children }: SecurityGateProps) {
     setCaptchaLoading(true);
     setCaptchaError(null);
     try {
-      await loadRecaptchaEnterprise();
-      const token = await window.grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
+      await loadRecaptcha();
+      const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
       if (!token) throw new Error("No token received from reCAPTCHA");
       // Token received — Google confirmed the user is human
       setCaptchaPassed(true);
@@ -124,7 +122,7 @@ export default function SecurityGate({ children }: SecurityGateProps) {
 
   const handleRetry = useCallback(() => {
     hasRun.current = false;
-    recaptchaReadyPromise = null; // reset so Enterprise script reloads
+    recaptchaReadyPromise = null; // reset so script reloads
     setCaptchaError(null);
     setCaptchaLoading(false);
     runCaptcha();

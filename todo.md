@@ -155,3 +155,10 @@
 - [x] Fix analytics script 400 error: guard VITE_ANALYTICS_ENDPOINT so script only loads when env var is set
 - [x] Self-host Inter font: downloaded inter-latin-wght-normal.woff2 (46 KB), added @font-face in index.css
 - [x] Removed Google Fonts Inter dependency from index.html; kept only Playfair Display (headings only, non-blocking)
+
+## Unused JS Reduction (Round 4)
+- [x] Rewrite SecurityGate to accept onPassed callback (no children prop)
+- [x] Created AppEntry.tsx with all heavy providers (tRPC, QueryClient, React Router)
+- [x] Split main.tsx: SecurityGate renders first, AppEntry lazy-loaded only after gate passes
+- [x] Main index bundle: 164 KB → 52 KB (68% smaller)
+- [x] vendor-react (397 KB), vendor-radix (108 KB), vendor-trpc (84 KB) all deferred until after gate

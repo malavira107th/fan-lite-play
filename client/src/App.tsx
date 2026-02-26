@@ -5,9 +5,8 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-// Critical path: Home + SecurityGate loaded eagerly (needed for first paint)
+// Critical path: Home loaded eagerly (needed for first paint)
 import Home from "./pages/Home";
-import SecurityGate from "./components/SecurityGate";
 
 // All other pages lazy-loaded to reduce initial bundle
 const About = lazy(() => import("./pages/About"));
@@ -88,13 +87,11 @@ function Router() {
 
 function App() {
   return (
-    <ErrorBoundary>
+      <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster richColors position="top-right" />
-          <SecurityGate>
-            <Router />
-          </SecurityGate>
+          <Router />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

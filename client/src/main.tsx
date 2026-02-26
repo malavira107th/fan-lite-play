@@ -1,61 +1,31 @@
-import { trpc } from "@/lib/trpc";
-import { UNAUTHED_ERR_MSG } from '@shared/const';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
-import superjson from "superjson";
-import App from "./App";
-import { getLoginUrl } from "./const";
+import { lazy, Suspense, useState } from "react";
+import SecurityGate from "./components/SecurityGate";
 import "./index.css";
 
-const queryClient = new QueryClient();
+// The full app (React Router + tRPC + Radix/shadcn) is lazy-loaded
+// ONLY after the SecurityGate is passed — this keeps the initial bundle tiny.
+const FullApp = lazy(() => import("./AppEntry"));
 
-const redirectToLoginIfUnauthorized = (error: unknown) => {
-  if (!(error instanceof TRPCClientError)) return;
-  if (typeof window === "undefined") return;
+function Root() {
+  const [passed, setPassed] = useState(false);
 
-  const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
-
-  if (!isUnauthorized) return;
-
-  window.location.href = getLoginUrl();
-};
-
-queryClient.getQueryCache().subscribe(event => {
-  if (event.type === "updated" && event.action.type === "error") {
-    const error = event.query.state.error;
-    redirectToLoginIfUnauthorized(error);
-    console.error("[API Query Error]", error);
+  if (!passed) {
+    return (
+      <SecurityGate onPassed={() => setPassed(true)} />
+    );
   }
-});
 
-queryClient.getMutationCache().subscribe(event => {
-  if (event.type === "updated" && event.action.type === "error") {
-    const error = event.mutation.state.error;
-    redirectToLoginIfUnauthorized(error);
-    console.error("[API Mutation Error]", error);
-  }
-});
+  return (
+    <Suspense fallback={
+      <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0f0a" }}>
+        <div style={{ width: 32, height: 32, border: "2px solid #16a34a", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    }>
+      <FullApp />
+    </Suspense>
+  );
+}
 
-const trpcClient = trpc.createClient({
-  links: [
-    httpBatchLink({
-      url: "/api/trpc",
-      transformer: superjson,
-      fetch(input, init) {
-        return globalThis.fetch(input, {
-          ...(init ?? {}),
-          credentials: "include",
-        });
-      },
-    }),
-  ],
-});
-
-createRoot(document.getElementById("root")!).render(
-  <trpc.Provider client={trpcClient} queryClient={queryClient}>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </trpc.Provider>
-);
+createRoot(document.getElementById("root")!).render(<Root />);

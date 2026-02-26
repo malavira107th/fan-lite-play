@@ -6,14 +6,14 @@ import SliderCaptcha from "./SliderCaptcha";
 
 
 interface SecurityGateProps {
-  children: React.ReactNode;
+  onPassed: () => void;
 }
 
 type Step = "captcha" | "age" | "passed";
 
 
 
-export default function SecurityGate({ children }: SecurityGateProps) {
+export default function SecurityGate({ onPassed }: SecurityGateProps) {
   const [step, setStep] = useState<Step>("captcha");
   const [captchaPassed, setCaptchaPassed] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -38,7 +38,8 @@ export default function SecurityGate({ children }: SecurityGateProps) {
   };
 
   if (step === "passed") {
-    return <>{children}</>;
+    onPassed();
+    return null;
   }
 
   return (

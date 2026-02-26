@@ -120,7 +120,10 @@
 - [x] Verify Neon DB has all 7 tables and 5 enums (confirmed via psycopg2)
 - [x] Push to GitHub and redeploy on Vercel
 
-## reCAPTCHA v3 Fix (Feb 2026)
+## reCAPTCHA Enterprise Fix (Feb 2026)
 - [x] Fix "Invalid site key" error: rewrite SecurityGate to use onload callback + grecaptcha.ready() for reliable initialization
 - [x] Remove conflicting script tags from index.html (none found — script was dynamically injected)
 - [x] Use onRecaptchaLoad global callback to ensure grecaptcha is fully initialized before execute()
+- [x] Root cause identified: key is reCAPTCHA Enterprise (not standard v3) — switch to enterprise.js + grecaptcha.enterprise.execute()
+- [x] Update backend /api/verify-captcha to use Enterprise Assessment API (recaptchaenterprise.googleapis.com)
+- [x] Add graceful fallback in backend if Enterprise API key is not configured

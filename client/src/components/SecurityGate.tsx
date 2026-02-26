@@ -9,11 +9,12 @@ const GATE_EXPIRY_HOURS = 24;
 declare global {
   interface Window {
     grecaptcha: {
-      ready: (cb: () => void) => void;
-      execute: (siteKey: string, options: { action: string }) => Promise<string>;
-      render: (container: string | HTMLElement, params: object) => number;
+      enterprise: {
+        ready: (cb: () => void) => void;
+        execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      };
     };
-    onRecaptchaLoad?: () => void;
+    onRecaptchaEnterpriseLoad?: () => void;
   }
 }
 
@@ -43,33 +44,33 @@ function markGatePassed(): void {
   }
 }
 
-// Load reCAPTCHA script once and return a promise that resolves when ready
+// Load reCAPTCHA Enterprise script once and return a promise that resolves when ready
 let recaptchaReadyPromise: Promise<void> | null = null;
 
-function loadRecaptcha(): Promise<void> {
+function loadRecaptchaEnterprise(): Promise<void> {
   if (recaptchaReadyPromise) return recaptchaReadyPromise;
 
   recaptchaReadyPromise = new Promise<void>((resolve, reject) => {
     // If already loaded and ready
-    if (window.grecaptcha && window.grecaptcha.ready) {
-      window.grecaptcha.ready(resolve);
+    if (window.grecaptcha?.enterprise?.ready) {
+      window.grecaptcha.enterprise.ready(resolve);
       return;
     }
 
     const timeout = setTimeout(() => reject(new Error("reCAPTCHA load timeout")), 15000);
 
-    // Remove any existing script to avoid conflicts
-    const existing = document.querySelector(`script[src*="recaptcha/api.js"]`);
+    // Remove any existing reCAPTCHA script to avoid conflicts
+    const existing = document.querySelector(`script[src*="recaptcha"]`);
     if (existing) existing.remove();
 
-    // Use onload callback approach for reliable initialization
-    window.onRecaptchaLoad = () => {
+    // Use onload callback for reliable initialization
+    window.onRecaptchaEnterpriseLoad = () => {
       clearTimeout(timeout);
-      window.grecaptcha.ready(resolve);
+      window.grecaptcha.enterprise.ready(resolve);
     };
 
     const script = document.createElement("script");
-    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}&onload=onRecaptchaLoad`;
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}&onload=onRecaptchaEnterpriseLoad`;
     script.async = true;
     script.onerror = () => {
       clearTimeout(timeout);
@@ -99,8 +100,8 @@ export default function SecurityGate({ children }: SecurityGateProps) {
     setCaptchaLoading(true);
     setCaptchaError(null);
     try {
-      await loadRecaptcha();
-      const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
+      await loadRecaptchaEnterprise();
+      const token = await window.grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action: "site_entry" });
       if (!token) throw new Error("No token received from reCAPTCHA");
       // Token received — Google confirmed the user is human
       setCaptchaPassed(true);
@@ -123,7 +124,7 @@ export default function SecurityGate({ children }: SecurityGateProps) {
 
   const handleRetry = useCallback(() => {
     hasRun.current = false;
-    recaptchaReadyPromise = null; // reset so script reloads
+    recaptchaReadyPromise = null; // reset so Enterprise script reloads
     setCaptchaError(null);
     setCaptchaLoading(false);
     runCaptcha();
@@ -264,7 +265,7 @@ export default function SecurityGate({ children }: SecurityGateProps) {
               )}
 
               <p className="text-xs text-zinc-600">
-                Protected by Google reCAPTCHA v3.{" "}
+                Protected by Google reCAPTCHA.{" "}
                 <a
                   href="https://policies.google.com/privacy"
                   target="_blank"

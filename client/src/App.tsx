@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { PromoWidget } from "./components/PromoWidget";
 
 // Critical path: Home loaded eagerly (needed for first paint)
 import Home from "./pages/Home";
@@ -91,6 +92,7 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster richColors position="top-right" />
+          <PromoWidget />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

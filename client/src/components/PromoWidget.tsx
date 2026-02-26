@@ -63,24 +63,25 @@ export function PromoWidget({ onVisibilityChange }: PromoWidgetProps) {
   return (
     <div
       ref={ref}
-      className="w-full cursor-pointer relative overflow-hidden"
+      className="w-full cursor-pointer overflow-hidden"
       onClick={handleClick}
       style={{
         WebkitTapHighlightColor: 'transparent',
         userSelect: 'none',
         animation: 'promoSlideIn 0.6s ease-out both',
+        maxHeight: '120px',
       }}
     >
       <style>{`
         @keyframes promoSlideIn {
-          from { opacity: 0; transform: translateY(-30px); }
+          from { opacity: 0; transform: translateY(-10px); }
           to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
       <img
         src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/pGTQPXwVtQwnTYvv.webp"
         alt="Special Offer"
-        className="w-full h-auto object-cover"
+        style={{ width: '100%', height: '120px', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
         loading="lazy"
         decoding="async"
         draggable={false}

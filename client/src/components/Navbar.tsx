@@ -1,7 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Settings } from "lucide-react";
-import { PromoWidget } from "./PromoWidget";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -46,8 +45,6 @@ export default function Navbar() {
   const navLinks = [...publicLinks, ...(user ? authLinks : [])];
 
   return (
-    <>
-      <PromoWidget />
     <header className="fixed top-0 inset-x-0 z-50 border-b border-border/50 backdrop-blur-md" style={{ background: "oklch(0.08 0.012 155 / 0.92)" }}>
       <div className="container">
         <div className="flex items-center justify-between h-16">
@@ -202,6 +199,5 @@ export default function Navbar() {
         </div>
       )}
     </header>
-    </>
   );
 }

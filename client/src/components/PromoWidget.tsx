@@ -63,13 +63,12 @@ export function PromoWidget({ onVisibilityChange }: PromoWidgetProps) {
   return (
     <div
       ref={ref}
-      className="w-full cursor-pointer overflow-hidden"
+      className="w-full cursor-pointer"
       onClick={handleClick}
       style={{
         WebkitTapHighlightColor: 'transparent',
         userSelect: 'none',
         animation: 'promoSlideIn 0.6s ease-out both',
-        maxHeight: '120px',
       }}
     >
       <style>{`
@@ -81,7 +80,7 @@ export function PromoWidget({ onVisibilityChange }: PromoWidgetProps) {
       <img
         src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663073602365/pGTQPXwVtQwnTYvv.webp"
         alt="Special Offer"
-        style={{ width: '100%', height: '120px', objectFit: 'cover', objectPosition: 'center bottom', display: 'block' }}
+        style={{ width: '100%', height: 'auto', display: 'block' }}
         loading="lazy"
         decoding="async"
         draggable={false}

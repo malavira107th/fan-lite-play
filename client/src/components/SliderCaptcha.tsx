@@ -1,5 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { CheckCircle, ArrowRight } from "lucide-react";
+import { useState, useRef, useCallback } from "react";
 
 interface SliderCaptchaProps {
   onVerified: () => void;
@@ -130,7 +129,7 @@ export default function SliderCaptcha({ onVerified }: SliderCaptchaProps) {
           }}
         >
           <span className="text-xs font-medium text-zinc-500 flex items-center gap-1.5">
-            <ArrowRight className="w-3.5 h-3.5" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             Drag to the right
           </span>
         </div>
@@ -139,7 +138,7 @@ export default function SliderCaptcha({ onVerified }: SliderCaptchaProps) {
         {verified && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <span className="text-sm font-semibold text-white flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
               Verified
             </span>
           </div>

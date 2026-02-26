@@ -162,3 +162,8 @@
 - [x] Split main.tsx: SecurityGate renders first, AppEntry lazy-loaded only after gate passes
 - [x] Main index bundle: 164 KB → 52 KB (68% smaller)
 - [x] vendor-react (397 KB), vendor-radix (108 KB), vendor-trpc (84 KB) all deferred until after gate
+
+## PageSpeed Round 5 Fixes
+- [ ] Replace lucide-react icons in SecurityGate and SliderCaptcha with inline SVGs
+- [ ] Remove unused Google Fonts preconnect hints from index.html
+- [ ] Self-host Playfair Display font to eliminate last Google Fonts dependency

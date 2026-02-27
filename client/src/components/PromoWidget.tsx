@@ -7,6 +7,8 @@ interface PromoWidgetProps {
 }
 
 export function PromoWidget({ onVisibilityChange }: PromoWidgetProps) {
+  // BANNER DISABLED — re-enable by removing the next line
+  return null;
   const [show, setShow] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

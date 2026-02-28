@@ -7,8 +7,24 @@ import "./index.css";
 // ONLY after the SecurityGate is passed — this keeps the initial bundle tiny.
 const FullApp = lazy(() => import("./AppEntry"));
 
+// Detect crawlers/bots by user-agent — Googlebot, Bingbot, etc.
+// These agents auto-pass the gate so they index the real page content.
+// This is required for Google Ads anti-cloaking compliance:
+// crawlers must see the same content as real users (the full site).
+function isCrawler(): boolean {
+  try {
+    return /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|applebot|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot|bytespider/i.test(
+      navigator.userAgent
+    );
+  } catch {
+    return false;
+  }
+}
+
 function Root() {
-  const [passed, setPassed] = useState(false);
+  // Crawlers skip the gate entirely — they see the full site immediately.
+  // Human visitors still go through the normal SecurityGate flow.
+  const [passed, setPassed] = useState(() => isCrawler());
 
   if (!passed) {
     return (

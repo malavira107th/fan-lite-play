@@ -1,11 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { lazy, Suspense } from "react";
-import AgeModal from "./components/AgeModal";
 import "./index.css";
 
-// The full app loads immediately — no gate blocking rendering.
-// This means Googlebot indexes the real page content (anti-cloaking compliant).
-// The AgeModal overlays the page for human visitors who haven't confirmed yet.
 const FullApp = lazy(() => import("./AppEntry"));
 
 function Root() {
@@ -17,10 +13,6 @@ function Root() {
       </div>
     }>
       <FullApp />
-      {/* Non-blocking age confirmation — renders on top of the full app.
-          Googlebot never triggers useEffect so it sees the page without this modal.
-          Human visitors see the modal until they confirm they are 18+. */}
-      <AgeModal />
     </Suspense>
   );
 }

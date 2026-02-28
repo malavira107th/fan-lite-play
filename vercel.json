@@ -2,8 +2,10 @@
   "version": 2,
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install --frozen-lockfile",
+  "outputDirectory": "dist/public",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/server.js" }
+    { "source": "/api/(.*)", "destination": "/api/server.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/server.js": {

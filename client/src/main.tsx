@@ -1,37 +1,14 @@
 import { createRoot } from "react-dom/client";
-import { lazy, Suspense, useState } from "react";
-import SecurityGate from "./components/SecurityGate";
+import { lazy, Suspense } from "react";
+import AgeModal from "./components/AgeModal";
 import "./index.css";
 
-// The full app (React Router + tRPC + Radix/shadcn) is lazy-loaded
-// ONLY after the SecurityGate is passed — this keeps the initial bundle tiny.
+// The full app loads immediately — no gate blocking rendering.
+// This means Googlebot indexes the real page content (anti-cloaking compliant).
+// The AgeModal overlays the page for human visitors who haven't confirmed yet.
 const FullApp = lazy(() => import("./AppEntry"));
 
-// Detect crawlers/bots by user-agent — Googlebot, Bingbot, etc.
-// These agents auto-pass the gate so they index the real page content.
-// This is required for Google Ads anti-cloaking compliance:
-// crawlers must see the same content as real users (the full site).
-function isCrawler(): boolean {
-  try {
-    return /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|applebot|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot|bytespider/i.test(
-      navigator.userAgent
-    );
-  } catch {
-    return false;
-  }
-}
-
 function Root() {
-  // Crawlers skip the gate entirely — they see the full site immediately.
-  // Human visitors still go through the normal SecurityGate flow.
-  const [passed, setPassed] = useState(() => isCrawler());
-
-  if (!passed) {
-    return (
-      <SecurityGate onPassed={() => setPassed(true)} />
-    );
-  }
-
   return (
     <Suspense fallback={
       <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0f0a" }}>
@@ -40,6 +17,10 @@ function Root() {
       </div>
     }>
       <FullApp />
+      {/* Non-blocking age confirmation — renders on top of the full app.
+          Googlebot never triggers useEffect so it sees the page without this modal.
+          Human visitors see the modal until they confirm they are 18+. */}
+      <AgeModal />
     </Suspense>
   );
 }
